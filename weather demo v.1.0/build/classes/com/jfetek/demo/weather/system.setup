@@ -1,0 +1,21 @@
+[system]
+name=Weather-Demo
+#root.dir=/root/weather-demo/
+root.dir=D:/Runtime/weather-demo/
+temp.path=temp/
+upload.path=upload/
+report.period=600000
+
+# env-var update period
+env-var.update.period=30000
+
+[database]
+name=noaa-demo
+size=20
+#host=192.168.3.208
+host=192.168.3.209
+#host=192.168.0.123
+username=weather.demo
+password=noaaweatherbigdata
+database=noaa_demo
+

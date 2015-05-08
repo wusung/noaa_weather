@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib>
+<tlibversion>1.0</tlibversion>
+<jspversion>1.1</jspversion>
+<shortname>wu</shortname>
+<info>web utilitites 0.6</info>
+<tag>
+	<name>minify</name>
+	<tagclass>com.googlecode.webutilities.tags.YUIMinTag</tagclass>
+	<info>JSP custom tag to expose YUICompressor functionality in the JSP to minify/compress inline CSS, JS code blocks. </info>
+	<attribute>
+		<name>type</name>
+		<required>true</required>
+	</attribute>
+	<attribute>
+		<name>charset</name>
+		<required>false</required>
+	</attribute>
+	<attribute>
+		<name>lineBreak</name>
+		<required>false</required>
+	</attribute>
+	<attribute>
+		<name>noMunge</name>
+		<required>false</required>
+	</attribute>
+	<attribute>
+		<name>preserveSemi</name>
+		<required>false</required>
+	</attribute>
+	<attribute>
+		<name>disableOptimizations</name>
+		<required>false</required>
+	</attribute>
+</tag>
+</taglib>
