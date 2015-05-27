@@ -26,8 +26,8 @@ name=bigdata.mongo
 size=100
 #host=192.168.3.208
 #host=192.168.3.33
-host=ec2-23-20-228-226.compute-1.amazonaws.com
-port=27800
+host=122.116.92.169
+port=27017
 username=
 password=
 
@@ -36,8 +36,8 @@ name=cache.mongo
 size=100
 #host=192.168.3.208
 #host=192.168.3.33
-host=ec2-23-20-228-226.compute-1.amazonaws.com
-port=27801
+host=122.116.92.169
+port=27017
 username=
 password=
 

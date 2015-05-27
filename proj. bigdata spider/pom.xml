@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.jfetek</groupId>
-	<artifactId>wiki-spider</artifactId>
+	<artifactId>weather-spider</artifactId>
 	<version>0.9</version>
 	<properties>
 		<project.build.mainClass>com.jfetek.demo.weather.spider.WikiSpider</project.build.mainClass>
@@ -80,4 +80,26 @@
 		</dependency>
 
 	</dependencies>
+
+	<build>
+		<plugins>
+			<!-- any other plugins -->
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
