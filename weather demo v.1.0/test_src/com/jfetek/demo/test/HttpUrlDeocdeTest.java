@@ -5,7 +5,6 @@ import java.util.regex.Pattern;
 
 import com.jfetek.common.SystemDefault;
 import com.jfetek.common.util.EasyCodecUtil;
-import com.jfetek.common.util.HttpUtil;
 
 public class HttpUrlDeocdeTest {
 
@@ -27,8 +26,9 @@ public class HttpUrlDeocdeTest {
 		}
 		else if (s.matches("(?i).*\\%[\\da-f]{2}.*")) {
 			// url escape
-			System.out.println("url escape");
-			return HttpUtil.decode(s);
+//			System.out.println("url escape");
+//			return HttpUtil.decode(s);
+			return "";
 		}
 		else if (s.matches("(?i)(\\/x[\\da-f]{2})+$")) {
 			// hex

@@ -11,12 +11,10 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.zip.GZIPInputStream;
 
-import com.jfetek.common.db.ConnectionWrapper;
 import com.jfetek.demo.weather.Console;
 
 public class MassInsert {
 	
-	static ConnectionWrapper wrapper;
 	static PreparedStatement ins;
 	static PreparedStatement count;
 	static PreparedStatement del;
@@ -24,40 +22,40 @@ public class MassInsert {
 	public static void main(String[] args) throws Exception {
 		Console.startup();
 		
-		wrapper = Console.database.leaseConnection("");
-		ins = wrapper.prepare("insert ignore into `all_2014` values (?,?,?,?,?,?,?,?,?,?,"
-															+"?,?,?,?,?,?,?,?,?,?,"
-															+"?,?,?,?,?,?,?,?,?,?,"
-															+"?,?,?,?)");
-		count = wrapper.prepare("select count(*) from `all_2014` where usaf=? and wban=?");
-		del = wrapper.prepare("delete from `all_2014` where usaf=? and wban=?");
-		
-        File dir = new File("\\\\192.168.3.33/bu/weather/2014.out");
-        File[] files = dir.listFiles();
-        for (int i = 0, len = files.length; i < len; ++i) {
-        	File file = files[i];
-        	String name = file.getName();
-        	String usaf = name.substring(0, 6);
-//        	usaf = "999999".equals(usaf)? "******" : usaf;
-        	String wban = name.substring(7, 12);
-        	wban = "99999".equals(wban)? "*****" : wban;
-        	int cntLine = countRawData(file);
-        	int cntRow = countRow(usaf, wban);
-        	if (cntLine != cntRow) {
-            	System.out.println("#"+(1+i)+"> "+name+" ... lines["+cntLine+"] rows["+cntRow+"]");
-        		delete(usaf, wban);
-            	processFile(file);
-        	}
-        	else {
-//    			System.out.println("total "+cntLine+" lines already processed");
-        	}
-        }
-        
-        if (null != wrapper) {
-        	wrapper.release();
-        }
-        
-        Console.shutdown();
+//		wrapper = Console.database.leaseConnection("");
+//		ins = wrapper.prepare("insert ignore into `all_2014` values (?,?,?,?,?,?,?,?,?,?,"
+//															+"?,?,?,?,?,?,?,?,?,?,"
+//															+"?,?,?,?,?,?,?,?,?,?,"
+//															+"?,?,?,?)");
+//		count = wrapper.prepare("select count(*) from `all_2014` where usaf=? and wban=?");
+//		del = wrapper.prepare("delete from `all_2014` where usaf=? and wban=?");
+//		
+//        File dir = new File("\\\\192.168.3.33/bu/weather/2014.out");
+//        File[] files = dir.listFiles();
+//        for (int i = 0, len = files.length; i < len; ++i) {
+//        	File file = files[i];
+//        	String name = file.getName();
+//        	String usaf = name.substring(0, 6);
+////        	usaf = "999999".equals(usaf)? "******" : usaf;
+//        	String wban = name.substring(7, 12);
+//        	wban = "99999".equals(wban)? "*****" : wban;
+//        	int cntLine = countRawData(file);
+//        	int cntRow = countRow(usaf, wban);
+//        	if (cntLine != cntRow) {
+//            	System.out.println("#"+(1+i)+"> "+name+" ... lines["+cntLine+"] rows["+cntRow+"]");
+//        		delete(usaf, wban);
+//            	processFile(file);
+//        	}
+//        	else {
+////    			System.out.println("total "+cntLine+" lines already processed");
+//        	}
+//        }
+//        
+//        if (null != wrapper) {
+//        	wrapper.release();
+//        }
+//        
+//        Console.shutdown();
 	}
 	
 	public static int countRawData(File file) throws IOException {
