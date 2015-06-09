@@ -148,6 +148,7 @@
     <servlet-name>WikiAPI1</servlet-name>
     <url-pattern>/wikistat</url-pattern>
   </servlet-mapping>
+  
   <servlet>
     <description></description>
     <display-name>GeoAPI1</display-name>
@@ -166,8 +167,7 @@
     <servlet-name>GeoAPI1</servlet-name>
     <url-pattern>/geo/*</url-pattern>
   </servlet-mapping>
-  
-  
+    
   <servlet>
     <description></description>
     <display-name>WeatherAPIStation</display-name>

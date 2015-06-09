@@ -69,6 +69,7 @@ public class Console {
 		Console.setup = new VariableSetup();
 
 		File file = new File("system.setup");
+		LOGGER.info("Load config {}", file.getAbsoluteFile());
 		if (!file.exists()) {
 			URL url = Console.class.getResource("system.setup");
 			ResourceUtil.copy(url, file);
@@ -92,6 +93,8 @@ public class Console {
 		sysName = Console.setup.val("system", "name");
 		
 		String strRoot = Console.setup.val("system", "root.dir");
+		LOGGER.info("Load config {}", strRoot);
+		System.out.println("Load config: " + strRoot);
 		Console.rootDir = new File(strRoot);
 		Console.rootDir.mkdirs();
 		
