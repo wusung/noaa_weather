@@ -94,7 +94,6 @@ public class Console {
 		
 		String strRoot = Console.setup.val("system", "root.dir");
 		LOGGER.info("Load config {}", strRoot);
-		System.out.println("Load config: " + strRoot);
 		Console.rootDir = new File(strRoot);
 		Console.rootDir.mkdirs();
 		

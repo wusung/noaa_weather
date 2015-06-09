@@ -17,7 +17,7 @@ size=100
 #host=192.168.3.33
 #host=ec2-54-145-134-216.compute-1.amazonaws.com
 host=127.0.0.1
-port=27801
+port=27017
 username=
 password=
 
