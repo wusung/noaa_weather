@@ -1,97 +1,98 @@
-
 Webservice API Project:
 	archive: weather-demo_v.1.0_20150421-1.zip
 
-	Àô¹Ò¡G
+	ç’°å¢ƒï¼š
 		Java 6
 		Tomcat 6
-		Eclipse 4.3 ±M®×
-		¨Ï¥ÎMavenºŞ²zlibrary¬Û¨Ì©Ê
+		Eclipse 4.3 å°ˆæ¡ˆ
+		ä½¿ç”¨Mavenç®¡ç†libraryç›¸ä¾æ€§
 
-	¶×¤J¡G
+	åŒ¯å…¥ï¼š
 		1. File -> Import -> General: Existing Projects into Workspace
-		2. Select archive file: «ü©wÀÉ®×©Ò¦b
-		3. ¤U¤è¹ï¸Ü®Ø·|¦C¥X¸ÓÀÉ®×¸Ìªº±M®×
-		4. ¿ï¨ú±M®× weather demo v.1.0
-		5. ¶×¤J§Y¥i
+		2. Select archive file: æŒ‡å®šæª”æ¡ˆæ‰€åœ¨
+		3. ä¸‹æ–¹å°è©±æ¡†æœƒåˆ—å‡ºè©²æª”æ¡ˆè£¡çš„å°ˆæ¡ˆ
+		4. é¸å–å°ˆæ¡ˆ weather demo v.1.0
+		5. åŒ¯å…¥å³å¯
 
-	¶×¥X¬°webapp¡G
+	åŒ¯å‡ºç‚ºwebappï¼š
 		1. File -> Export -> Web: WAR file
-		2. Web project ¿ï¾Ü±M®×
-		3. Destination ¿ï¾Ü¶×¥X¥Ø¿ı»PÀÉ¦W
-		[4,5¨BÆJ¬°¦³³]©w server runtime ®É¥i¨Ï¥Î]
-		4. ¤Ä¿ï Optimize for a specific server runtime
-		5. ¿ï¾Ü¥Ø¼Ğ runtime (¦p¡Gtomcat 6)
-		[4,5¨BÆJ¬°¦³³]©w server runtime ®É¥i¨Ï¥Î]
-		6. Finish¡A§Y±N±M®×¥´¥]¦¨¬°¤@­Ó webapp ÀÉ(warÀÉ)
+		2. Web project é¸æ“‡å°ˆæ¡ˆ
+		3. Destination é¸æ“‡åŒ¯å‡ºç›®éŒ„èˆ‡æª”å
+		[4,5æ­¥é©Ÿç‚ºæœ‰è¨­å®š server runtime æ™‚å¯ä½¿ç”¨]
+		4. å‹¾é¸ Optimize for a specific server runtime
+		5. é¸æ“‡ç›®æ¨™ runtime (å¦‚ï¼štomcat 6)
+		[4,5æ­¥é©Ÿç‚ºæœ‰è¨­å®š server runtime æ™‚å¯ä½¿ç”¨]
+		6. Finishï¼Œå³å°‡å°ˆæ¡ˆæ‰“åŒ…æˆç‚ºä¸€å€‹ webapp æª”(waræª”)
 
-	API³]©wÀÉ¡G res/com.jfetek.demo.weather/system.setup
-		µ{¦¡¨Ï¥Î¥Ø¿ı»P¸ê®Æ®w³s½u³]©wµ¥³£¥i¥H¦b¸Ì­±­×§ï
-		ª`·N¡I
-			¨C¦¸±Ò°Êµ{¦¡·|§äµ{¦¡°õ¦æ¥Ø¿ı¤º¬O§_¦³ system.setup ÀÉ®×
-			¦pªG¨S¦³¡A«h·|²£¥Í system.setup ÀÉ¨ì°õ¦æ¥Ø¿ı
-			¤@¯ëtomcat°õ¦æ¥Ø¿ı§Y¬°¦w¸Ë¥Ø¿ı¤§¤Uªº bin/ 
-			­×§ï¸ÓÀÉ®×¤º®e¡A¦A­«±Òµ{¦¡§Y·|Åª¤J·sªº³]©w­È
+	APIè¨­å®šæª”ï¼š res/com.jfetek.demo.weather/system.setup
+		ç¨‹å¼ä½¿ç”¨ç›®éŒ„èˆ‡è³‡æ–™åº«é€£ç·šè¨­å®šç­‰éƒ½å¯ä»¥åœ¨è£¡é¢ä¿®æ”¹
+		æ³¨æ„ï¼
+			æ¯æ¬¡å•Ÿå‹•ç¨‹å¼æœƒæ‰¾ç¨‹å¼åŸ·è¡Œç›®éŒ„å…§æ˜¯å¦æœ‰ system.setup æª”æ¡ˆ
+			å¦‚æœæ²’æœ‰ï¼Œå‰‡æœƒç”¢ç”Ÿ system.setup æª”åˆ°åŸ·è¡Œç›®éŒ„
+			ä¸€èˆ¬tomcatåŸ·è¡Œç›®éŒ„å³ç‚ºå®‰è£ç›®éŒ„ä¹‹ä¸‹çš„ bin/ 
+			ä¿®æ”¹è©²æª”æ¡ˆå…§å®¹ï¼Œå†é‡å•Ÿç¨‹å¼å³æœƒè®€å…¥æ–°çš„è¨­å®šå€¼
 
 
 Webservice API webapp:
 	file: weather-demo_v.1.0_20150421-1.war
 
-	¨Ï¥Î¤èªk¡G
-		©ñ¨ìtomcatªºwebapps¥Ø¿ı¤§¤U¡A§Y·|¦Û°Ê¸Ñ¶}¨Ãµo¥¬¬°webapp
-		webapp¦WºÙ§YwarÀÉªº¦WºÙ¡A¤ñ¦p aaa.war §Y·|µo¥¬¨ìºô¯¸®Ú¥Ø¿ı¤§¤U aaa ¥Ø¿ı
-		§Y /aaa/
-		¦pªG·Q­nµo¥¬¨ìºô¯¸®Ú¥Ø¿ı¡AwarÀÉ¦W§ï¬° ROOT.war §Y·|µo¥¬¨ìºô¯¸®Ú¥Ø¿ı
-		§Y /
+	ä½¿ç”¨æ–¹æ³•ï¼š
+		æ”¾åˆ°tomcatçš„webappsç›®éŒ„ä¹‹ä¸‹ï¼Œå³æœƒè‡ªå‹•è§£é–‹ä¸¦ç™¼å¸ƒç‚ºwebapp
+		webappåç¨±å³waræª”çš„åç¨±ï¼Œæ¯”å¦‚ aaa.war å³æœƒç™¼å¸ƒåˆ°ç¶²ç«™æ ¹ç›®éŒ„ä¹‹ä¸‹ aaa ç›®éŒ„
+		å³ /aaa/
+		å¦‚æœæƒ³è¦ç™¼å¸ƒåˆ°ç¶²ç«™æ ¹ç›®éŒ„ï¼Œwaræª”åæ”¹ç‚º ROOT.war å³æœƒç™¼å¸ƒåˆ°ç¶²ç«™æ ¹ç›®éŒ„
+		å³ /
 
 
 Spider Project
 	file: bigdata-spider_v.1.0_20150421-1.zip
 
-	Àô¹Ò¡G
+	ç’°å¢ƒï¼š
 		Java 6
 		Tomcat 6
-		Eclipse 4.3 ±M®×
-		¨Ï¥ÎMavenºŞ²zlibrary¬Û¨Ì©Ê
+		Eclipse 4.3 å°ˆæ¡ˆ
+		ä½¿ç”¨Mavenç®¡ç†libraryç›¸ä¾æ€§
 		MongoDB
 
-	¶×¤J¡G
+	åŒ¯å…¥ï¼š
 		1. File -> Import -> General: Existing Projects into Workspace
-		2. Select archive file: «ü©wÀÉ®×©Ò¦b
-		3. ¤U¤è¹ï¸Ü®Ø·|¦C¥X¸ÓÀÉ®×¸Ìªº±M®×
-		4. ¿ï¨ú±M®× proj. bigdata spider
-		5. ¶×¤J§Y¥i
+		2. Select archive file: æŒ‡å®šæª”æ¡ˆæ‰€åœ¨
+		3. ä¸‹æ–¹å°è©±æ¡†æœƒåˆ—å‡ºè©²æª”æ¡ˆè£¡çš„å°ˆæ¡ˆ
+		4. é¸å–å°ˆæ¡ˆ proj. bigdata spider
+		5. åŒ¯å…¥å³å¯
 
-	¥´¥]¡G
+	æ‰“åŒ…ï¼š
 		1. File -> Export -> Java: runnable JAR file
-		2. Launch configuration: ¿ï¾Üspider±M®×
-		3. Export destination: ¿ï¾Ü¿é¥X¥Ø¿ı»PÀÉ¦W
+		2. Launch configuration: é¸æ“‡spiderå°ˆæ¡ˆ
+		3. Export destination: é¸æ“‡è¼¸å‡ºç›®éŒ„èˆ‡æª”å
 		4. Library handling: Extract required libraries into generated JAR
-		5. Finish§Y¥i
+		5. Finishå³å¯
 
-	Spider³]©wÀÉ¡G src/main/resources/com.jfetek.demo.weather/system.setup
-		Spider¨Ï¥Î¥Ø¿ı»P¸ê®Æ®w³s½u³]©wµ¥³£¥i¥H¦b¸Ì­±­×§ï
-		ª`·N¡I
-			¨C¦¸±Ò°Êµ{¦¡·|§äµ{¦¡°õ¦æ¥Ø¿ı¤º¬O§_¦³ system.setup ÀÉ®×
-			¦pªG¨S¦³¡A«h·|²£¥Í system.setup ÀÉ¨ì°õ¦æ¥Ø¿ı
-			°õ¦æ¥Ø¿ı§Y¬°°õ¦æspiderªº¥Ø¿ı
-			­×§ï¸ÓÀÉ®×¤º®e¡A¦A­«±Òµ{¦¡§Y·|Åª¤J·sªº³]©w­È
+	Spiderè¨­å®šæª”ï¼š src/main/resources/com.jfetek.demo.weather/system.setup
+		Spiderä½¿ç”¨ç›®éŒ„èˆ‡è³‡æ–™åº«é€£ç·šè¨­å®šç­‰éƒ½å¯ä»¥åœ¨è£¡é¢ä¿®æ”¹
+		æ³¨æ„ï¼
+			æ¯æ¬¡å•Ÿå‹•ç¨‹å¼æœƒæ‰¾ç¨‹å¼åŸ·è¡Œç›®éŒ„å…§æ˜¯å¦æœ‰ system.setup æª”æ¡ˆ
+			å¦‚æœæ²’æœ‰ï¼Œå‰‡æœƒç”¢ç”Ÿ system.setup æª”åˆ°åŸ·è¡Œç›®éŒ„
+			åŸ·è¡Œç›®éŒ„å³ç‚ºåŸ·è¡Œspiderçš„ç›®éŒ„
+			ä¿®æ”¹è©²æª”æ¡ˆå…§å®¹ï¼Œå†é‡å•Ÿç¨‹å¼å³æœƒè®€å…¥æ–°çš„è¨­å®šå€¼
 
-	Wiki Spider °õ¦æ¤èªk¡G
+	Wiki Spider åŸ·è¡Œæ–¹æ³•ï¼š
 		java -cp ./Spider.jar com.jfetek.demo.weather.spider.Spiders wiki
-		©Î°Ñ¦Ò wiki.sh ¤º®e
+		æˆ–åƒè€ƒ wiki.sh å…§å®¹
 
-	Weather Spider °õ¦æ¤èªk¡G
+	Weather Spider åŸ·è¡Œæ–¹æ³•ï¼š
 		java -cp ./Spider.jar com.jfetek.demo.weather.spider.Spiders weather
-		©Î°Ñ¦Ò weather.sh ¤º®e
+		æˆ–åƒè€ƒ weather.sh å…§å®¹
 		
 
 Task Database
+    
+    Program Path: 
+        /root/spders
+        
+    Data Path: 
+        /data/spiders
 
-```
-  Program Path: /root/spders
-  Data Path: /data/spiders
-```
 
 
 # Appendix
