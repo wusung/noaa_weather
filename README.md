@@ -83,5 +83,69 @@ Spider Project
 	Weather Spider 執行方法：
 		java -cp ./Spider.jar com.jfetek.demo.weather.spider.Spiders weather
 		或參考 weather.sh 內容
+		
 
-	
+### Task Database
+Program Path: /root/spders
+Data Path: /data/spiders
+
+
+# Appendix
+
+### /etc/init/mongod.conf
+
+```sh
+# Ubuntu upstart file at /etc/init/mongod.conf
+
+# Recommended ulimit values for mongod or mongos
+# See http://docs.mongodb.org/manual/reference/ulimit/#recommended-settings
+#
+limit fsize unlimited unlimited
+limit cpu unlimited unlimited
+limit as unlimited unlimited
+limit nofile 64000 64000
+limit rss unlimited unlimited
+limit nproc 32000 32000
+
+kill timeout 300 # wait 300s between SIGTERM and SIGKILL.
+
+pre-start script
+	mkdir -p /var/lib/mongodb/
+	chown mongodb:mongodb /var/lib/mongodb/ -R
+	mkdir -p /data2/mongodb/
+	chown mongodb:mongodb /data2/mongodb/ -R
+	mkdir -p /var/log/mongodb/data2/
+	chown mongodb:mongodb /var/log/mongodb/data2/ -R
+end script
+
+start on runlevel [2345]
+stop on runlevel [06]
+
+script
+  ENABLE_MONGOD="yes"
+  CONF=/etc/mongod2.conf
+  PID=/var/lib/mongodb/mongod2.pid
+  NAME=mongod2
+  DAEMON=/usr/bin/mongod
+  DAEMONUSER=${DAEMONUSER:-mongodb}
+
+  if [ -f /etc/default/mongod ]; then . /etc/default/mongod; fi
+
+  # Handle NUMA access to CPUs (SERVER-3574)
+  # This verifies the existence of numactl as well as testing that the command works
+  NUMACTL_ARGS="--interleave=all"
+  if which numactl >/dev/null 2>/dev/null && numactl $NUMACTL_ARGS ls / >/dev/null 2>/dev/null
+  then
+	NUMACTL="$(which numactl) -- $NUMACTL_ARGS"
+	DAEMON_OPTS=${DAEMON_OPTS:-"--config $CONF"}
+  else
+	NUMACTL=""
+	DAEMON_OPTS="-- "${DAEMON_OPTS:-"--config $CONF"}
+  fi
+
+  if [ "x$ENABLE_MONGOD" = "xyes" ]
+  then
+	exec start-stop-daemon --make-pidfile --pidfile $PID --start --chuid $DAEMONUSER --name $NAME --exec $NUMACTL $DAEMON $DAEMON_OPTS
+  fi
+end script
+```
