@@ -156,3 +156,28 @@ script
   fi
 end script
 ```
+
+
+### /etc/mongod.conf
+
+```yaml
+# !! IMPORTANT !!
+#
+# This file uses the YAML format as described in the documentation:
+#   http://docs.mongodb.org/manual/reference/configuration-options/
+
+storage:
+    dbPath: "/var/lib/mongodb"
+    engine: wiredTiger
+
+systemLog:
+    destination: file
+    path: "/var/log/mongodb/mongodb.log"
+    quiet: true
+    logAppend: true
+
+net:
+    port: 27017
+    bindIp: 127.0.0.1
+
+```
