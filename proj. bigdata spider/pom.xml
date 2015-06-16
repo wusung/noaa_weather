@@ -5,7 +5,7 @@
 	<artifactId>weather-spider</artifactId>
 	<version>0.9</version>
 	<properties>
-		<project.build.mainClass>com.jfetek.demo.weather.spider.WikiSpider</project.build.mainClass>
+		<project.build.mainClass>com.jfetek.demo.weather.tasks.weather.MassInsertTask</project.build.mainClass>
 	</properties>
 	<dependencies>
 		<dependency>

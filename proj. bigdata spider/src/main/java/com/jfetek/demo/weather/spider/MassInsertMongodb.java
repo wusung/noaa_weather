@@ -9,8 +9,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import com.jfetek.common.Lookup;
 import com.jfetek.common.time.DateTime;
 import com.jfetek.common.util.TextUtil;
+import com.jfetek.demo.weather.Console;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
@@ -20,37 +22,21 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
 
-public class MassInsertMongodb2 {
-
-	
+public class MassInsertMongodb {	
 	public static void main(String[] args) {
 		MongoClient mongo = null;
-		try {
-			mongo = new MongoClient( "192.168.3.33" , 27017 );
-			DB db = mongo.getDB("weather1");
-			
-//			DBCollection countries = createCountryCollection(db, true);
-			
-//			DBCollection countries = db.getCollection("country");
-//			BulkWriteOperation bulk = countries.initializeUnorderedBulkOperation();
-//			DBCollection stations = createStationCollection(db, bulk, true);
-//			BulkWriteResult rsBulk = bulk.execute();
-//			System.out.println(rsBulk);
-			
-			
+		try {			
+			Console.setup.cates("weather:spider", "weather");
+			Lookup setup = Console.setup.cates("weather");
+			DB db = Console.mongo.getDB(setup.lookup("database"));
+
 			for (int i = 2001, end = 1993; i >= end; --i) {
-//			for (int i = 1974, end = 1992; i <= end; ++i) {
 				long ts = System.currentTimeMillis();
 				DBCollection records = createRecordCollectionOfYear(db, i, false);
-				System.out.println(i+" total "+records.count()+" records in "+timetext(System.currentTimeMillis()-ts)+"ms");
-			}
-			
-//			int year = 2010;
-//			long ts = System.currentTimeMillis();
-//			DBCollection records = createRecordCollectionOfYear(db, year, false);
-//			System.out.println(year+" total "+records.count()+" records in "+timetext(System.currentTimeMillis()-ts)+"ms");
-			
-			
+				System.out.println(i + " total " + records.count()
+						+ " records in "
+						+ timetext(System.currentTimeMillis() - ts) + "ms");
+			}			
 		} catch(Exception e) {
 			e.printStackTrace();
 		} finally {

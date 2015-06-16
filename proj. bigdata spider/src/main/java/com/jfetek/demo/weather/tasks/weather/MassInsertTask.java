@@ -3,14 +3,20 @@ package com.jfetek.demo.weather.tasks.weather;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.jfetek.common.Lookup;
 import com.jfetek.common.time.DateTime;
 import com.jfetek.common.util.TextUtil;
+import com.jfetek.demo.weather.Console;
 import com.jfetek.demo.weather.Utils;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
@@ -21,54 +27,33 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 
 public class MassInsertTask {
+	
+	private static final Logger LOGGER		= LoggerFactory.getLogger(MassInsertTask.class);
 
+	public static final String[]	STATION_COLUMN	= {
+	//		 0       1       2       3          4        5       6      7      8      9        10
+			"usaf", "wban", "name", "country", "state", "icao", "lat", "lng", "elv", "beign", "end"
+		};
+	public static final String[]	RECORD_COLUMN	= {
+	//   0       1       2               3            4        5      6      7      8    9    10
+		"usaf", "wban", "yyyyMMddHHmm", "direction", "speed", "gus", "clg", "skc", "l", "m", "h",
+	//   11     12    13    14    15    16    17    18    19    20   21             22      23
+		"vsb", "mw", "mw", "mw", "mw", "aw", "aw", "aw", "aw", "w", "temperature", "dewp", "slp",
+	//   24     25     26     27     28       29       30       31       32
+		"alt", "stp", "max", "min", "pcp01", "pcp06", "pcp24", "pcpxx", "sd"
+	};
 	
-//	public static void main(String[] args) {
-//		MongoClient mongo = null;
-//		try {
-//			mongo = new MongoClient( "192.168.3.33" , 27017 );
-//			DB db = mongo.getDB("weather1");
-//			
-////			DBCollection countries = createCountryCollection(db, true);
-//			
-////			DBCollection countries = db.getCollection("country");
-////			BulkWriteOperation bulk = countries.initializeUnorderedBulkOperation();
-////			DBCollection stations = createStationCollection(db, bulk, true);
-////			BulkWriteResult rsBulk = bulk.execute();
-////			System.out.println(rsBulk);
-//			
-//			
-//			for (int i = 2001, end = 1993; i >= end; --i) {
-////			for (int i = 1974, end = 1992; i <= end; ++i) {
-//				long ts = System.currentTimeMillis();
-//				DBCollection records = createRecordCollectionOfYear(db, i, false);
-//				System.out.println(i+" total "+records.count()+" records in "+timetext(System.currentTimeMillis()-ts)+"ms");
-//			}
-//			
-////			int year = 2010;
-////			long ts = System.currentTimeMillis();
-////			DBCollection records = createRecordCollectionOfYear(db, year, false);
-////			System.out.println(year+" total "+records.count()+" records in "+timetext(System.currentTimeMillis()-ts)+"ms");
-//			
-//			
-//		} catch(Exception e) {
-//			e.printStackTrace();
-//		} finally {
-//			if (null != mongo) {
-//				mongo.close();
-//				mongo = null;
-//			}
-//		}
-//	}
-	
-	public static DBCollection createCountryCollection(DB db, boolean drop_old) {
+	public static DBCollection createCountryCollection(DB db, boolean drop_old) throws Exception {
 		DBCollection countries = db.getCollection("country");
 		if (drop_old) countries.drop();
 //		countries.createIndex(new BasicDBObject(""), new BasicDBObject());
 		BulkWriteOperation bulk = countries.initializeUnorderedBulkOperation();
 		bulk.insert(BasicDBObjectBuilder.start().append("_id", "").append("name", "UNKNOWN").append("station", new BasicDBList()).get());
 		
-		File file = new File("\\\\192.168.3.107/disk_d/資料備份/new Project/BigData/country-list.txt");
+		//File file = new File("\\\\192.168.3.107/disk_d/資料備份/new Project/BigData/country-list.txt");
+		Lookup setup = Console.setup.cates("weather");
+		String rootPath  = setup.lookup("root.path");		
+		File file = new File(rootPath + "/country-list.txt");
 		HashSet<String> ids = new HashSet<String>();
 		BufferedReader in = null;
 		try {
@@ -112,20 +97,16 @@ public class MassInsertTask {
 		BasicDBObjectBuilder find = BasicDBObjectBuilder.start()
 				.add("_id", country)
 				.push("station")
-					.add("$nin", Arrays.asList(station))
+				.add("$nin", Arrays.asList(station))
 				.pop();
 		BasicDBObjectBuilder update = BasicDBObjectBuilder.start()
 				.push("$push")
-					.add("station", station)
+				.add("station", station)
 				.pop();
 //		countries.update(find.get(), update.get());
 		bulk.find(find.get()).update(update.get());
 	}
 
-	public static final String[]	STATION_COLUMN	= {
-//		 0       1       2       3          4        5       6      7      8      9        10
-		"usaf", "wban", "name", "country", "state", "icao", "lat", "lng", "elv", "beign", "end"
-	};
 	public static DBCollection createStationCollection(DB db, BulkWriteOperation country_bulk, boolean drop_old) {
 		DBCollection stations = db.getCollection("station");
 		if (drop_old) stations.drop();
@@ -138,7 +119,9 @@ public class MassInsertTask {
 		stations.createIndex(new BasicDBObject("geo", "2d"));
 		BulkWriteOperation bulk = stations.initializeUnorderedBulkOperation();
 
-		File file = new File("\\\\192.168.3.107/disk_d/資料備份/new Project/BigData/isd-history.csv");
+		Lookup setup = Console.setup.cates("weather");
+		String rootPath  = setup.lookup("root.path");
+		File file = new File(rootPath + "/isd-history.csv");
 		int cntLine = 1;
 		BufferedReader in = null;
 		try {
@@ -215,14 +198,6 @@ public class MassInsertTask {
 		return stations;
 	}
 
-	public static final String[]	RECORD_COLUMN	= {
-	//   0       1       2               3            4        5      6      7      8    9    10
-		"usaf", "wban", "yyyyMMddHHmm", "direction", "speed", "gus", "clg", "skc", "l", "m", "h",
-	//   11     12    13    14    15    16    17    18    19    20   21             22      23
-		"vsb", "mw", "mw", "mw", "mw", "aw", "aw", "aw", "aw", "w", "temperature", "dewp", "slp",
-	//   24     25     26     27     28       29       30       31       32
-		"alt", "stp", "max", "min", "pcp01", "pcp06", "pcp24", "pcpxx", "sd"
-	};
 	public static BulkWriteResult processRecord(DBCollection records, File file, boolean drop_old) {
 		String name = file.getName();
 		String station = name.substring(0, name.lastIndexOf('-'));
@@ -321,6 +296,15 @@ public class MassInsertTask {
 		}
 		return result;
 	}
+	
+	/**
+	 * Importing weather data by one year
+	 * @param db
+	 * @param year
+	 * @param drop_old Delete existed weather data before starting
+	 * @return
+	 * @author Wusung Peng<wusung.peng@kyper.com>
+	 */
 	public static DBCollection createRecordCollectionOfYear(DB db, int year, boolean drop_old) {
 		DBCollection records = db.getCollection("record.y"+year);
 		if (drop_old) {
@@ -335,21 +319,23 @@ public class MassInsertTask {
 			records.createIndex(new BasicDBObject("station", 1));
 			records.createIndex(new BasicDBObject("date", 1));
 			records.createIndex(new BasicDBObject("station", 1).append("date", 1));
-		}
+		}		
 		
-		File dir = new File("\\\\192.168.3.33/bu-disk-c/weather/ready/"+year+"/csv/");
-//		File dir = new File("\\\\192.168.3.33/bu/weather/ready/"+year+"/csv/");
+//		File dir = new File("\\\\192.168.3.33/bu-disk-c/weather/ready/"+year+"/csv/");
+		Lookup setup = Console.setup.cates("weather");
+		String rootPath  = setup.lookup("root.path");
+		File dir = new File(rootPath + year + "/csv/");
+		LOGGER.info("root.path={}", dir.getAbsolutePath());
 		File[] files = dir.listFiles();
+		
 		long tsLoop = System.currentTimeMillis();
 		for (int i = 0; i < files.length; ++i) {
 			File file = files[i];
 			if (file.isDirectory()) continue;
 
 //			System.out.println("["+(1+i)+"/"+files.length+"]process file> "+file.getName());
-			long ts = System.currentTimeMillis();
-			
+			long ts = System.currentTimeMillis();			
 			BulkWriteResult result = processRecord(records, file, drop_old);
-
 			if (0 == i % 100) {
 				System.out.println("["+(1+i)+"/"+files.length+"] "+DateTime.now()+"> ("+Utils.timetext(System.currentTimeMillis()-tsLoop)+") ");
 			}
@@ -360,7 +346,6 @@ public class MassInsertTask {
 
 		return records;
 	}
-	
 	
 	public static String[] parseCSVLine(String line) {
 		int idxBegin = 0;
@@ -389,5 +374,40 @@ public class MassInsertTask {
 			}
 		}
 		return fields.toArray(new String[0]);
+	}
+	
+	public static void main(String[] args) {
+		try {
+			Console.startup();
+			Console.setup.cates("weather:spider", "weather");		
+			
+	//		DBCollection countries = createCountryCollection(db, true);
+			
+	//		DBCollection countries = db.getCollection("country");
+	//		BulkWriteOperation bulk = countries.initializeUnorderedBulkOperation();
+	//		DBCollection stations = createStationCollection(db, bulk, true);
+	//		BulkWriteResult rsBulk = bulk.execute();
+	//		System.out.println(rsBulk);
+			int startDate = Integer.parseInt(args[0]);
+			int endDate = Integer.parseInt(args[1]);
+			
+			for (int i = startDate, end = endDate; i >= end; --i) {
+				long ts = System.currentTimeMillis();
+				LOGGER.info("year={}", i);
+				DBCollection records = createRecordCollectionOfYear(Utils.getWeatherDb(), i, false);
+				//System.out.println(i+" total "+records.count()+" records in "+timetext(System.currentTimeMillis()-ts)+"ms");
+			}
+			
+	//		int year = 2010;
+	//		long ts = System.currentTimeMillis();
+	//		DBCollection records = createRecordCollectionOfYear(db, year, false);
+	//		System.out.println(year+" total "+records.count()+" records in "+timetext(System.currentTimeMillis()-ts)+"ms");
+			
+			Console.shutdown();
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			
+		}
 	}
 }

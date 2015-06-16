@@ -29,12 +29,14 @@ import org.apache.commons.net.ftp.FTPFile;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 
+import com.jfetek.common.Lookup;
 import com.jfetek.common.SystemDefault;
 import com.jfetek.common.data.Result;
 import com.jfetek.common.util.ResourceUtil;
 import com.jfetek.common.util.TextUtil;
 import com.jfetek.demo.weather.data.Filter;
 import com.jfetek.demo.weather.data.FtpFileInfo;
+import com.mongodb.DB;
 
 public class Utils {
 
@@ -750,4 +752,14 @@ public class Utils {
 //			Console.shutdown();
 //		}
 //	}
+	
+	public static final String getWeatherDbName() throws Exception {
+		Lookup setup = Console.setup.cates("weather");
+		return setup.lookup("database");
+	}
+
+	public static final DB getWeatherDb() throws Exception {
+		return Console.mongo.getDB(getWeatherDbName());
+	}
+
 }
