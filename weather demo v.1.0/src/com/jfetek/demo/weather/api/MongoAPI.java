@@ -679,15 +679,19 @@ public class MongoAPI {
 
 	public Result<BasicDBObject> queryGeoByCity(String country, String state, String city) {
 		DBCollection station = db.getCollection("station");		
-		BasicDBObjectBuilder query = BasicDBObjectBuilder.start().add("country", country);
+		BasicDBObjectBuilder query = BasicDBObjectBuilder.start();		
+		if (!StringUtils.isNullOrEmpty(country)) {
+			query.add("country", country.toUpperCase().trim());
+		}		
 		if (!StringUtils.isNullOrEmpty(state)) {
-			query.add("state", state);
+			query.add("state", state.toUpperCase().trim());
 		}
 		if (!StringUtils.isNullOrEmpty(city)) {
-			query.add("name", city);
+			query.add("name", city.toUpperCase().trim());
 		}
 		BasicDBObject data = (BasicDBObject) station.findOne(query.get(), 
 				new BasicDBObject("_id", 1)
+					.append("country", 1)
 					.append("usaf", 1)
 					.append("wban", 1)
 					.append("name", 1)

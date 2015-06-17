@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -109,35 +110,39 @@ public class GeoAPI1 extends HttpServlet {
 		MongoAPI api = new MongoAPI(db);
 		Result<BasicDBObject> rsStation = api.queryGeoByCity(country, state, city);
 		System.out.println("nearest station: " + rsStation);
-		String station = rsStation.data.getString("_id");
-		if (TextUtil.noValueOrBlank(station)) {
-			JSONObject json = JsonUtil.getBasicJson(
-					ErrorCode.error(String.format("%s can not cound neariest station", station)));
-			json.write(out);
-			return;
+		if (rsStation.data != null) {
+			String station = rsStation.data.getString("_id");
+			if (TextUtil.noValueOrBlank(station)) {
+				JSONObject json = JsonUtil.getBasicJson(
+						ErrorCode.error(String.format("%s can not cound neariest station", station)));
+				json.write(out);
+				return;
+			}
 		}
 
 		String g_columns = params.getParam("fields", "");
 		String[] columns = g_columns.split(",");
 
-		HashMap<String,List<?>> map = new HashMap<String,List<?>>(4);
-		map.put("columns", Arrays.asList(columns));
+		HashMap<String,List<?>> map = new HashMap<String,List<?>>(1);
+		//map.put("columns", Arrays.asList(columns));
 		ArrayList<Long> idxList = new ArrayList<Long>();
-		map.put("index", idxList);
+		//map.put("index", idxList);
 		
-		Station _station = new Station();
-		_station.setId(rsStation.data.getString("_id"));
-		_station.setUsaf(rsStation.data.getString("usaf"));
-		_station.setWban(rsStation.data.getString("wban"));
-		_station.setName(rsStation.data.getString("name"));
-		_station.setCountry(rsStation.data.getString("country"));
-		_station.setState(rsStation.data.getString("state"));
-		_station.setGeo(rsStation.data.getString("geo"));
-		_station.setElv(rsStation.data.getString("elv"));
-		_station.setDate_range(rsStation.data.getString("data_range"));
+		Map<String, Object> resultMap = new HashMap<String, Object>();		
+		if (rsStation.positive()) {
+			resultMap.put("_id", rsStation.data.getString("_id"));
+			resultMap.put("usaf", rsStation.data.getString("usaf"));
+			resultMap.put("wban", rsStation.data.getString("wban"));
+			resultMap.put("name", rsStation.data.getString("name"));
+			resultMap.put("country", rsStation.data.getString("country"));
+			resultMap.put("state", rsStation.data.getString("state"));
+			resultMap.put("geo", rsStation.data.getString("geo"));
+			resultMap.put("elv", rsStation.data.getString("elv"));
+			resultMap.put("data_range", rsStation.data.getString("data_range"));
+		}
 		
-		ArrayList<Station> dataList = new ArrayList<Station>();
-		dataList.add(_station);
+		ArrayList<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
+		dataList.add(resultMap);
 		map.put("data", dataList);
 
 		JSONObject json = JsonUtil.getBasicJson(ErrorCode.ok());
