@@ -45,7 +45,6 @@ public class Console {
 	private Console() {
 	}
 	
-	
 	public static synchronized void startup() throws IOException, RuntimeException {
 		if (onGoing) throw new IllegalStateException("Server already startup");
 		
@@ -71,6 +70,7 @@ public class Console {
 		Console.setup = new VariableSetup();
 
 		File file = new File("system.setup");
+		LOGGER.info("Load setup: " + file.getAbsolutePath());
 		if (!file.exists()) {
 			URL url = Console.class.getResource("system.setup");
 			ResourceUtil.copy(url, file);
@@ -90,6 +90,7 @@ public class Console {
 			throw new RuntimeException(e);
 		}
 	}
+	
 	private static void initEnv() {
 		sysName = Console.setup.val("system", "name");
 		
@@ -126,6 +127,7 @@ public class Console {
 			e.printStackTrace();
 		}
 	}
+	
 	private static void initMongodb() throws UnknownHostException {
 		Lookup setup = Console.setup.cate("mongodb:bigdata");
 		String host = setup.lookup("host");
@@ -137,6 +139,7 @@ public class Console {
 			Console.mongo = new MongoClient(host);
 		}
 	}
+	
 	private static void initCache() throws UnknownHostException {
 		Lookup setup = Console.setup.cate("mongodb:cache");
 		String host = setup.lookup("host");
@@ -170,6 +173,7 @@ public class Console {
 	private static void finSetup() {
 		Console.setup = null;
 	}
+	
 	private static void finEnv() {
 
 		Console.templateConfig.clearTemplateCache();
@@ -186,10 +190,12 @@ public class Console {
 		Console.webappDir = null;
 		Console.webappResourceDir = null;
 	}
+	
 	private static void finMongodb() {
 		Console.mongo.close();
 		Console.mongo = null;
 	}
+	
 	private static void finCache() {
 		Console.cache.close();
 		Console.cache = null;

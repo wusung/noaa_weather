@@ -21,9 +21,9 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
+import com.mysql.jdbc.StringUtils;
 
 public class MongoAPI {
-	
 	
 	public static final List<String>	CountryField	= Collections.unmodifiableList(
 		Arrays.asList("_id",	"name")
@@ -72,11 +72,11 @@ public class MongoAPI {
 		return Result.wrap(data);
 	}
 
-
 	public Result<ArrayList<ArrayList<Object>>> queryWeatherByStation(int year, String station, DateRange drange, String[] columns) {
 		List<String> cols = null==columns||0==columns.length? RecordField : Arrays.asList(columns);
 		return queryWeatherByStation(year, station, drange, cols);
 	}
+	
 	public Result<ArrayList<ArrayList<Object>>> queryWeatherByStation(int year, String station, DateRange drange, List<String> columns) {
 		boolean hasRange = (null != drange);
 		boolean oneday = (hasRange && 1 == drange.days());
@@ -675,5 +675,27 @@ public class MongoAPI {
 			int len = this.list.size();
 			return 0==len? -999.0 : this.min;
 		}
+	}
+
+	public Result<BasicDBObject> queryGeoByCity(String country, String state, String city) {
+		DBCollection station = db.getCollection("station");		
+		BasicDBObjectBuilder query = BasicDBObjectBuilder.start().add("country", country);
+		if (!StringUtils.isNullOrEmpty(state)) {
+			query.add("state", state);
+		}
+		if (!StringUtils.isNullOrEmpty(city)) {
+			query.add("name", city);
+		}
+		BasicDBObject data = (BasicDBObject) station.findOne(query.get(), 
+				new BasicDBObject("_id", 1)
+					.append("usaf", 1)
+					.append("wban", 1)
+					.append("name", 1)
+					.append("state", 1)
+					.append("date_range", 1)
+					.append("geo", 1));
+		if (null == data) 
+			return Result.failure();
+		return Result.wrap(data);
 	}
 }

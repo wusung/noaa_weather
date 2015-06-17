@@ -154,6 +154,7 @@
     <display-name>GeoAPI1</display-name>
     <servlet-name>GeoAPI1</servlet-name>
     <servlet-class>com.jfetek.demo.weather.ws.GeoAPI1</servlet-class>
+    <!-- 
     <init-param>
       <param-name>param.route</param-name>
       <param-value>/:country(/:city)(/)</param-value>
@@ -162,10 +163,11 @@
       <param-name>merge.query</param-name>
       <param-value>true</param-value>
     </init-param>
+     -->
   </servlet>
   <servlet-mapping>
     <servlet-name>GeoAPI1</servlet-name>
-    <url-pattern>/geo/*</url-pattern>
+    <url-pattern>/geo_api</url-pattern>
   </servlet-mapping>
     
   <servlet>
