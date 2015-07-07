@@ -11,3 +11,6 @@ clean:
 
 scp-weather:
 	cd "weather demo v.1.0/target" && scp weather-demo-0.0.1-SNAPSHOT.war wusung.peng@weather.kyper.co:~/source
+
+deploy: weather scp-weather
+

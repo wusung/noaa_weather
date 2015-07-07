@@ -152,10 +152,12 @@ public class WeatherAPI1ByGeo extends HttpServlet {
 		ArrayList<ArrayList<?>> dataList = new ArrayList<ArrayList<?>>();
 		map.put("data", dataList);
 		
-		logger.info("begin_time-end_time = {}~{}", drange.first, drange.last);
+		logger.info("begin_time-end_time {}~{}", drange.first.year.value, drange.last.year.value);
 		long ts = System.currentTimeMillis();
-		for (int year = drange.first.year.value, end = drange.last.year.value; year <= end; ++year) {
-			Result<ArrayList<ArrayList<Object>>> result = api.queryWeatherByStation(year, station, drange, columns);
+		
+		for (int year = drange.first.year.value; year <= drange.last.year.value; year++) {
+			Result<ArrayList<ArrayList<Object>>> result = api.queryWeatherByStation(year, station, drange, columns);			
+			logger.info("result={}", result);
 //			map.put(year, result.positive()? result.data : new TupleList(0));
 			if (result.positive()) {
 				for (int i = 0, lenData =  result.data.size(); i < lenData; ++i) {
@@ -171,9 +173,13 @@ public class WeatherAPI1ByGeo extends HttpServlet {
 		ts = System.currentTimeMillis() - ts;
 
 		JSONObject json = JsonUtil.getBasicJson(ErrorCode.ok());
-		String resStr = JsonUtil.makeJsonize(map).toString();
+		String resStr = "{}";
+		if (!dataList.isEmpty())
+			resStr = JsonUtil.makeJsonize(map).toString();
 		JsonUtil.addField(json, "data", resStr);
 		JsonUtil.addField(json, "version", VERSION);
-		json.write(out);		
+		json.write(out);
+		
+		logger.info("_handleRequest() - end, data.size={}", dataList.size());
 	}
 }

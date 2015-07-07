@@ -1,5 +1,8 @@
 package com.jfetek.demo.weather.api;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -24,6 +27,7 @@ import com.mongodb.DBObject;
 import com.mysql.jdbc.StringUtils;
 
 public class MongoAPI {
+	private static final Logger logger = LoggerFactory.getLogger(MongoAPI.class);
 	
 	public static final List<String>	CountryField	= Collections.unmodifiableList(
 		Arrays.asList("_id",	"name")
@@ -74,24 +78,26 @@ public class MongoAPI {
 
 	public Result<ArrayList<ArrayList<Object>>> queryWeatherByStation(int year, String station, DateRange drange, String[] columns) {
 		List<String> cols = null==columns||0==columns.length? RecordField : Arrays.asList(columns);
-		return queryWeatherByStation(year, station, drange, cols);
+		Result<ArrayList<ArrayList<Object>>> returnResult = queryWeatherByStation(year, station, drange, cols);
+		return returnResult;
 	}
 	
 	public Result<ArrayList<ArrayList<Object>>> queryWeatherByStation(int year, String station, DateRange drange, List<String> columns) {
+
 		boolean hasRange = (null != drange);
 		boolean oneday = (hasRange && 1 == drange.days());
 		
 		if (!RecordField.containsAll(columns)) {
-			return Result.failure("some query column not exists.");
+			Result<ArrayList<ArrayList<Object>>> returnResult = Result.failure("some query column not exists.");
+			return returnResult;
 		}
+
+		String collectionName = "record.y" + year;
+		DBCollection record = db.getCollection(collectionName);
+		if (0 == record.count())
+			return Result.failure(collectionName + ", collection is empty.");
 		
-//		Result<TupleList> result;
-		
-		DBCollection record = db.getCollection("record.y"+year);
-		if (0 == record.count()) return Result.failure("collection not exists");
-		
-		BasicDBObjectBuilder query = BasicDBObjectBuilder.start()
-				.add("station", station);
+		BasicDBObjectBuilder query = BasicDBObjectBuilder.start().add("station", station);
 		if (hasRange) {
 			query.push("date");
 			if (oneday) {
@@ -116,11 +122,12 @@ public class MongoAPI {
 		int len = columns.size();
 		ArrayList<ArrayList<Object>> list = new ArrayList<ArrayList<Object>>(len);
 		DBCursor c = record.find(query.get(), cols.get());
+		logger.info("keySet={}", query.get().keySet().toString());
+		logger.info("result.size={}", c.count());
 		for (DBObject o : c) {
 			BasicDBObject data = (BasicDBObject) o;
 			ArrayList<Object> row = new ArrayList<Object>(len);
 			for (int i = 0; i < len; ++i) {
-				//row.add(o.get(columns.get(i)));
 				String s = data.getString( columns.get(i) );
 				if (null == s) {
 					row.add( -999 );
@@ -141,7 +148,9 @@ public class MongoAPI {
 			list.add(row);
 		}
 		
-		return Result.wrap(list);
+		Result<ArrayList<ArrayList<Object>>> returnResult = Result.wrap(list);
+
+		return returnResult;
 	}
 
 	public Result<ArrayList<ArrayList<Object>>> queryDailyWeatherByStation(int year, String station, DateRange drange, String[] columns) {
