@@ -1,9 +1,11 @@
 package com.jfetek.demo.weather.ws;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,9 +31,11 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 
 /**
- * 
+ * GEO information query servlet
  */
 public class GeoAPI1 extends HttpServlet {
+
+	private static final Logger logger = LoggerFactory.getLogger(GeoAPI1.class);
 	
 	public static final String	VERSION	= "0";
 
