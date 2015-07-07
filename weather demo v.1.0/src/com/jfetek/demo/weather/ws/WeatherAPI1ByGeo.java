@@ -157,12 +157,9 @@ public class WeatherAPI1ByGeo extends HttpServlet {
 		
 		for (int year = drange.first.year.value; year <= drange.last.year.value; year++) {
 			Result<ArrayList<ArrayList<Object>>> result = api.queryWeatherByStation(year, station, drange, columns);			
-			logger.info("result={}", result);
-//			map.put(year, result.positive()? result.data : new TupleList(0));
 			if (result.positive()) {
 				for (int i = 0, lenData =  result.data.size(); i < lenData; ++i) {
 					ArrayList<Object> arr = result.data.get(i);
-//					DateTime dt = DateTime.valueOf(arr.get(0)+" "+arr.get(1));
 					String datetime = String.valueOf(arr.remove(arr.size()-1));
 					DateTime dt = DateTime.valueOf(datetime);
 					idxList.add(dt.timestamp);
