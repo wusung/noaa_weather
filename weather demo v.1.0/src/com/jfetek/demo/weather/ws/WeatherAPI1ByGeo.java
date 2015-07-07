@@ -1,5 +1,8 @@
 package com.jfetek.demo.weather.ws;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -34,6 +37,7 @@ import com.mongodb.DB;
  * Servlet implementation class Query1
  */
 public class WeatherAPI1ByGeo extends HttpServlet {
+	private static final Logger logger = LoggerFactory.getLogger(WeatherAPI1ByGeo.class);
 	
 	public static final String	VERSION	= "0";
 
@@ -42,8 +46,6 @@ public class WeatherAPI1ByGeo extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 6280300524715168048L;
 	
-	
-
 	static final double R	= 6371;	// earth radius
 	static double distance(double lat1, double lng1, double lat2, double lng2) {
 		lat1 = lat1 * Math.PI / 180;
@@ -52,8 +54,7 @@ public class WeatherAPI1ByGeo extends HttpServlet {
 		lng2 = lng2 * Math.PI / 180;
 		double d = Math.acos(Math.sin(lat1)*Math.sin(lat2)+Math.cos(lat1)*Math.cos(lat2)*Math.cos(lng2-lng1))*R;
 		return d;	// in km
-	}
-	
+	}	
 	
 	private PathRouter router;
 	
@@ -144,7 +145,6 @@ public class WeatherAPI1ByGeo extends HttpServlet {
 		String g_columns = params.getParam("fields", "");
 		String[] columns = g_columns.split(",");
 
-
 		HashMap<String,List<?>> map = new HashMap<String,List<?>>(4);
 		map.put("columns", Arrays.asList(columns));
 		ArrayList<Long> idxList = new ArrayList<Long>();
@@ -152,6 +152,7 @@ public class WeatherAPI1ByGeo extends HttpServlet {
 		ArrayList<ArrayList<?>> dataList = new ArrayList<ArrayList<?>>();
 		map.put("data", dataList);
 		
+		logger.info("begin_time-end_time = {}~{}", drange.first, drange.last);
 		long ts = System.currentTimeMillis();
 		for (int year = drange.first.year.value, end = drange.last.year.value; year <= end; ++year) {
 			Result<ArrayList<ArrayList<Object>>> result = api.queryWeatherByStation(year, station, drange, columns);
@@ -169,13 +170,10 @@ public class WeatherAPI1ByGeo extends HttpServlet {
 		}
 		ts = System.currentTimeMillis() - ts;
 
-
 		JSONObject json = JsonUtil.getBasicJson(ErrorCode.ok());
 		String resStr = JsonUtil.makeJsonize(map).toString();
 		JsonUtil.addField(json, "data", resStr);
 		JsonUtil.addField(json, "version", VERSION);
-		json.write(out);
-		
+		json.write(out);		
 	}
-
 }
