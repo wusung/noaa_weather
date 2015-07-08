@@ -7,3 +7,4 @@ target
 .idea/
 *.pyc
 *.swp
+.vagrant
