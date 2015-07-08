@@ -8,3 +8,4 @@ target
 *.pyc
 *.swp
 .vagrant
+__pycache__
