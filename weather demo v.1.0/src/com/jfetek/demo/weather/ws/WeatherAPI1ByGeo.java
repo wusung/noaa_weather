@@ -34,16 +34,13 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 
 /**
- * Servlet implementation class Query1
+ * Servlet implementation class Weather API
  */
 public class WeatherAPI1ByGeo extends HttpServlet {
 	private static final Logger logger = LoggerFactory.getLogger(WeatherAPI1ByGeo.class);
 	
 	public static final String	VERSION	= "0";
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 6280300524715168048L;
 	
 	static final double R	= 6371;	// earth radius
@@ -141,7 +138,6 @@ public class WeatherAPI1ByGeo extends HttpServlet {
 			drange = DateRange.between(g_begin, g_end);
 		}
 
-//		String[] g_columns = params.getParams("fields");
 		String g_columns = params.getParam("fields", "");
 		String[] columns = g_columns.split(",");
 
