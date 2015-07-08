@@ -1,0 +1,10 @@
+mongo:
+  build: .
+  ports:
+    - "27017:27017"
+  hostname:
+    mongo
+  volumes:
+    - /var/lib/mongodb:/data/db
+  privileged:
+    true
