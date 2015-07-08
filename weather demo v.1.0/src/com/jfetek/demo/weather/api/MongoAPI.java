@@ -59,19 +59,18 @@ public class MongoAPI {
 		this.db = db;
 	}
 	
-	
-//	public Result<HashMap<String,ArrayList<JSONObject>>> listLocation() {
-//	}
-//	
-//	public Result<PairList<String,String>> listContries() {
-//		
-//	}
-	
 	public Result<BasicDBObject> queryNearestStationByGeo(double lat, double lng) {
 		DBCollection station = db.getCollection("station");
 		BasicDBObject near = new BasicDBObject("$near", Arrays.asList(lng, lat));
 		BasicDBObject query = new BasicDBObject("geo", near);
-		BasicDBObject data = (BasicDBObject) station.findOne(query, new BasicDBObject("_id", 1).append("usaf", 1).append("wban", 1).append("name", 1).append("state", 1).append("date_range", 1).append("geo", 1));
+		BasicDBObject data = (BasicDBObject) station.findOne(query, 
+				new BasicDBObject("_id", 1)
+					.append("usaf", 1)
+					.append("wban", 1)
+					.append("name", 1)
+					.append("state", 1)
+					.append("date_range", 1)
+					.append("geo", 1));
 		if (null == data) return Result.failure();
 		return Result.wrap(data);
 	}
@@ -163,8 +162,6 @@ public class MongoAPI {
 			return Result.failure("some query column not exists.");
 		}
 		
-//		Result<TupleList> result;
-		
 		DBCollection record = db.getCollection("record.y"+year);
 		if (0 == record.count()) return Result.failure("collection not exists");
 		
@@ -230,8 +227,6 @@ public class MongoAPI {
 				}
 			}
 		}
-		
-		
 		
 		ArrayList<ArrayList<Object>> list = new ArrayList<ArrayList<Object>>(len);
 		for (Entry<DailyGroupKey, HashMap<String,Object>> e : cache.entrySet()) {
@@ -318,8 +313,6 @@ public class MongoAPI {
 			return Result.failure("some query column not exists.");
 		}
 		
-//		Result<TupleList> result;
-		
 		DBCollection record = db.getCollection("record.y"+year);
 		if (0 == record.count()) return Result.failure("collection not exists");
 		
@@ -385,8 +378,6 @@ public class MongoAPI {
 				}
 			}
 		}
-		
-		
 		
 		ArrayList<ArrayList<Object>> list = new ArrayList<ArrayList<Object>>(len);
 		for (Entry<WeeklyGroupKey, HashMap<String,Object>> e : cache.entrySet()) {
@@ -476,6 +467,7 @@ public class MongoAPI {
 		List<String> cols = null==columns||0==columns.length? RecordField : Arrays.asList(columns);
 		return queryMonthlyWeatherByStation(year, station, drange, cols);
 	}
+
 	public Result<ArrayList<ArrayList<Object>>> queryMonthlyWeatherByStation(int year, String station, DateRange drange, List<String> columns) {
 		boolean hasRange = (null != drange);
 		boolean oneday = (hasRange && 1 == drange.days());
@@ -483,8 +475,6 @@ public class MongoAPI {
 		if (!RecordField.containsAll(columns)) {
 			return Result.failure("some query column not exists.");
 		}
-		
-//		Result<TupleList> result;
 		
 		DBCollection record = db.getCollection("record.y"+year);
 		if (0 == record.count()) return Result.failure("collection not exists");
@@ -528,7 +518,6 @@ public class MongoAPI {
 			}
 
 			for (int i = 0; i < len; ++i) {
-				//row.add(o.get(columns.get(i)));
 				String col = columns.get(i);
 				String s = data.getString( col );
 				if (null == s) {
@@ -551,8 +540,6 @@ public class MongoAPI {
 				}
 			}
 		}
-		
-		
 		
 		ArrayList<ArrayList<Object>> list = new ArrayList<ArrayList<Object>>(len);
 		for (Entry<MonthlyGroupKey, HashMap<String,Object>> e : cache.entrySet()) {
