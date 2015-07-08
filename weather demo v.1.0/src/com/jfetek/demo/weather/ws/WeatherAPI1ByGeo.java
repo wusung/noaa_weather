@@ -116,7 +116,7 @@ public class WeatherAPI1ByGeo extends HttpServlet {
 		MongoAPI api = new MongoAPI(db);
 		
 		Result<BasicDBObject> rsStation = api.queryNearestStationByGeo(g_lat, g_lng);
-		System.out.println("nearest station: "+rsStation);
+		logger.info("nearest station={}", rsStation);
 		String station = rsStation.data.getString("_id");
 		if (TextUtil.noValueOrBlank(station)) {
 			JSONObject json = JsonUtil.getBasicJson(ErrorCode.error("lat:"+g_lat+" lng:"+g_lng+" can not cound neariest station"));
@@ -170,7 +170,7 @@ public class WeatherAPI1ByGeo extends HttpServlet {
 		ts = System.currentTimeMillis() - ts;
 
 		JSONObject json = JsonUtil.getBasicJson(ErrorCode.ok());
-		String resStr = "{}";
+		String resStr = "{}"; // Avoid crash if pandas.dataframe.emtpy
 		if (!dataList.isEmpty())
 			resStr = JsonUtil.makeJsonize(map).toString();
 		JsonUtil.addField(json, "data", resStr);

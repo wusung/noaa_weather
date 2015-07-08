@@ -122,8 +122,6 @@ public class MongoAPI {
 		int len = columns.size();
 		ArrayList<ArrayList<Object>> list = new ArrayList<ArrayList<Object>>(len);
 		DBCursor c = record.find(query.get(), cols.get());
-		logger.info("keySet={}", query.get().keySet().toString());
-		logger.info("result.size={}", c.count());
 		for (DBObject o : c) {
 			BasicDBObject data = (BasicDBObject) o;
 			ArrayList<Object> row = new ArrayList<Object>(len);
