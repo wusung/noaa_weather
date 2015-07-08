@@ -1,0 +1,23 @@
+web:
+  restart: always
+  build: "./weather demo v.1.0"
+  links:
+    - mongo:mongo
+#  env_file: .env
+  ports:
+    - "8081:8080"
+  hostname:
+    tomcat
+  privileged:
+    true
+
+mongo:
+  build: ./mongodb
+  ports:
+    - "27017:27017"
+  hostname:
+    mongo
+  volumes:
+    /var/lib/mongodb:/data/db
+  privileged:
+    true
