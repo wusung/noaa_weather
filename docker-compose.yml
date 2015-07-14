@@ -18,6 +18,7 @@ mongo:
   hostname:
     mongo
   volumes:
-    /var/lib/mongodb:/data/db
+    - /var/lib/mongodb:/data/db
   privileged:
     true
+
