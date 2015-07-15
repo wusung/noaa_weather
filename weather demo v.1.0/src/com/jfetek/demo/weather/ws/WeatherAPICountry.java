@@ -106,8 +106,6 @@ public class WeatherAPICountry extends HttpServlet {
 		Date g_end = params.getDateParam("end_time");
 		String sample_rate = params.getParam("sample_rate");
 		
-		logger.debug("params={}, {}, {}, {}, ({}, {})", g_country, g_begin, g_end, sample_rate, g_lat, g_lng);
-		
 		DateRange drange = null;
 		if (null == g_begin && null == g_end) {
 
