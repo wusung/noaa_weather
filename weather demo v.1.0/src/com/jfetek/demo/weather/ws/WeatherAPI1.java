@@ -263,9 +263,11 @@ public class WeatherAPI1 extends HttpServlet {
 		}
 		ts = System.currentTimeMillis() - ts;
 
-
 		JSONObject json = JsonUtil.getBasicJson(ErrorCode.ok());
-		String resStr = JsonUtil.makeJsonize(map).toString();
+		String resStr = "{}";
+		if (!dataList.isEmpty()) {
+			resStr = JsonUtil.makeJsonize(map).toString();
+		}
 		JsonUtil.addField(json, "data", resStr);
 		JsonUtil.addField(json, "version", VERSION);
 		json.write(out);

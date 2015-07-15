@@ -109,14 +109,6 @@
     <display-name>WeatherAPI1</display-name>
     <servlet-name>WeatherAPI1</servlet-name>
     <servlet-class>com.jfetek.demo.weather.ws.WeatherAPI1</servlet-class>
-    <!-- init-param>
-      <param-name>param.route</param-name>
-      <param-value>/:name(/:fields)(/)</param-value>
-    </init-param>
-    <init-param>
-      <param-name>merge.query</param-name>
-      <param-value>true</param-value>
-    </init-param -->
   </servlet>
   <servlet-mapping>
     <servlet-name>WeatherAPI1</servlet-name>
@@ -194,5 +186,17 @@
   <servlet-mapping>
     <servlet-name>WeatherAPICountry</servlet-name>
     <url-pattern>/weather_country</url-pattern>
-  </servlet-mapping>  
+  </servlet-mapping>
+  
+  <servlet>
+    <description></description>
+    <display-name>WeatherByStation</display-name>
+    <servlet-name>WeatherByStation</servlet-name>
+    <servlet-class>com.jfetek.demo.weather.ws.WeatherByStation</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>WeatherByStation</servlet-name>
+    <url-pattern>/weather_stations</url-pattern>
+  </servlet-mapping>
+  
 </web-app>

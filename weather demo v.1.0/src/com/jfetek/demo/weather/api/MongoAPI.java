@@ -96,7 +96,13 @@ public class MongoAPI {
 		if (0 == record.count())
 			return Result.failure(collectionName + ", collection is empty.");
 		
-		BasicDBObjectBuilder query = BasicDBObjectBuilder.start().add("station", station);
+		BasicDBObjectBuilder query = null;		
+		if (station.contains(",")) {
+			query = BasicDBObjectBuilder.start()
+						.add("station", new BasicDBObject("$in", Arrays.asList(station.split(","))));
+		} else {
+			query = BasicDBObjectBuilder.start().add("station", station);
+		}
 		if (hasRange) {
 			query.push("date");
 			if (oneday) {
@@ -165,8 +171,12 @@ public class MongoAPI {
 		DBCollection record = db.getCollection("record.y"+year);
 		if (0 == record.count()) return Result.failure("collection not exists");
 		
-		BasicDBObjectBuilder query = BasicDBObjectBuilder.start()
-				.add("station", station);
+		BasicDBObjectBuilder query = BasicDBObjectBuilder.start().add("station", station);
+		if (station.contains(",")) {
+			query = BasicDBObjectBuilder.start()
+					.add("station", new BasicDBObject("$in", Arrays.asList(station.split(","))));
+		}
+		
 		if (hasRange) {
 			query.push("date");
 			if (oneday) {
@@ -318,6 +328,10 @@ public class MongoAPI {
 		
 		BasicDBObjectBuilder query = BasicDBObjectBuilder.start()
 				.add("station", station);
+		if (station.contains(",")) {
+			query = BasicDBObjectBuilder.start()
+					.add("station", new BasicDBObject("$in", Arrays.asList(station.split(","))));
+		}
 		if (hasRange) {
 			query.push("date");
 			if (oneday) {
@@ -481,6 +495,10 @@ public class MongoAPI {
 		
 		BasicDBObjectBuilder query = BasicDBObjectBuilder.start()
 				.add("station", station);
+		if (station.contains(",")) {
+			query = BasicDBObjectBuilder.start()
+					.add("station", new BasicDBObject("$in", Arrays.asList(station.split(","))));
+		}
 		if (hasRange) {
 			query.push("date");
 			if (oneday) {

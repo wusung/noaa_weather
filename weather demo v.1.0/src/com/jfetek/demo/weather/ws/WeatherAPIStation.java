@@ -77,7 +77,6 @@ public class WeatherAPIStation extends HttpServlet {
 	private void _handleRequest(Params params, HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
 
 		String g_country = params.trimParam("country");
-
 		double g_lat = params.getDoubleParam("lat", -999);
 		double g_lng = params.getDoubleParam("lng", -999);
 		
@@ -91,15 +90,19 @@ public class WeatherAPIStation extends HttpServlet {
 		DB db = Console.mongo.getDB("weather1");
 		DBCollection station = db.getCollection("station");
 		BasicDBObject query = new BasicDBObject();
+		DBCursor c = null;
 		if (null == g_country && -999 != g_lat && -999 != g_lng) {
 			BasicDBObject near = new BasicDBObject();
 			near.append("$near", Arrays.asList(g_lng, g_lat));
 			query.append("geo", near);
+			c = station.find(query, new BasicDBObject("_id", 1).append("usaf", 1).append("wban", 1).append("name", 1).append("state", 1).append("date_range", 1).append("geo", 1))
+					.limit(10);
 		}
 		else {
 			query.append("country", g_country);
+			c = station.find(query, new BasicDBObject("_id", 1).append("usaf", 1).append("wban", 1).append("name", 1).append("state", 1).append("date_range", 1).append("geo", 1));
 		}
-		DBCursor c = station.find(query, new BasicDBObject("_id", 1).append("usaf", 1).append("wban", 1).append("name", 1).append("state", 1).append("date_range", 1).append("geo", 1));
+		
 //		out.write("[");
 		int count = 0;
 		for (DBObject o : c) {
