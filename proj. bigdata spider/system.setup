@@ -1,7 +1,7 @@
 [system]
 name=Weather-Demo
 #root.dir=/root/weather-demo/
-root.dir=/data/spider/
+root.dir=data/spider/
 #root.dir=D:/Runtime/wiki-demo/
 #root.dir=\\192.168.3.33\bu-disk-c\Runtime\weather-demo\
 temp.path=temp/
@@ -26,7 +26,7 @@ name=bigdata.mongo
 size=100
 #host=192.168.3.208
 #host=192.168.3.33
-host=122.116.92.169
+host=mongo
 port=27017
 username=
 password=
@@ -36,7 +36,7 @@ name=cache.mongo
 size=100
 #host=192.168.3.208
 #host=192.168.3.33
-host=122.116.92.169
+host=mongo
 port=27017
 username=
 password=

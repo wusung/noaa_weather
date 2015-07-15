@@ -16,7 +16,7 @@ name=wiki.mongo.weather1
 size=100
 #host=192.168.3.33
 #host=ec2-54-145-134-216.compute-1.amazonaws.com
-host=127.0.0.1
+host=mongo
 port=27017
 username=
 password=
@@ -30,4 +30,3 @@ root.path=wiki/
 [http-client]
 User-Agent=Mozilla/5.0 (Windows NT 5.1; rv:33.0) Gecko/20100101 Firefox/33.0
 Accept-Encoding=gzip, deflate
-
