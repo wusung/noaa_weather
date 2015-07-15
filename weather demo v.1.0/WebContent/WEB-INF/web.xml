@@ -184,4 +184,15 @@
     <servlet-name>WeatherAPIStation</servlet-name>
     <url-pattern>/station_list</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <description></description>
+    <display-name>WeatherAPICountry</display-name>
+    <servlet-name>WeatherAPICountry</servlet-name>
+    <servlet-class>com.jfetek.demo.weather.ws.WeatherAPICountry</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>WeatherAPICountry</servlet-name>
+    <url-pattern>/weather_country</url-pattern>
+  </servlet-mapping>  
 </web-app>
