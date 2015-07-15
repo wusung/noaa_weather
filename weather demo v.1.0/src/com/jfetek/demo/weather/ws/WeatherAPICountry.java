@@ -267,10 +267,4 @@ public class WeatherAPICountry extends HttpServlet {
 		JsonUtil.addField(json, "version", VERSION);
 		json.write(out);
 	}
-
-	private String[] splitColumns(Params params) {		
-		if (StringUtils.isNullOrEmpty(params.getParam("fields")))
-			return null;
-		return params.getParam("fields", "").split(",");
-	}
 }
