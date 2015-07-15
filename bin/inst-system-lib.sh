@@ -7,4 +7,4 @@ apt-get install -y default-jre
 apt-get install -y default-jdk
 
 apt-get install -y maven
-apt-get install -y tomcat7
+#:wapt-get install -y tomcat7

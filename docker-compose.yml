@@ -22,3 +22,11 @@ mongo:
   privileged:
     true
 
+spider:
+  restart: always
+  build: "./proj. bigdata spider"
+  links: 
+    - mongo:mongo
+  hostname:
+    spider
+
