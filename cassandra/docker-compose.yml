@@ -1,0 +1,33 @@
+web:
+  image: ubuntu:trusty
+  links:
+    - cassnode1
+    - cassnode2
+    - cassnode3
+
+cassnode1:
+  build: .
+  links:
+    - cassnode2
+    - cassnode3
+  hostname: cassnode1
+  volumes:
+    - /vdisk/data1:/var/lib/cassandra/data
+  command: -name "DataGuard Cluster" -seeds "cassnode1,cassnode2,cassnode3"
+
+cassnode2:
+  build: .
+  links:
+    - cassnode3
+  hostname: cassnode2
+  volumes:
+    - /vdisk/data2:/var/lib/cassandra/data
+  command: -name "DataGuard Cluster" -seeds "cassnode1,cassnode2,cassnode3"
+
+cassnode3:
+  build: .
+  hostname: cassnode3
+  volumes:
+    - /vdisk/data3:/var/lib/cassandra/data
+  command: -name "DataGuard Cluster" -seeds "cassnode1,cassnode2,cassnode3"
+
