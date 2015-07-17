@@ -35,6 +35,8 @@ cassnode1:
   links:
     - cassnode2
     - cassnode3
+  ports:
+    - "9042:9042"
   hostname:
     cassnode1
   volumes:
