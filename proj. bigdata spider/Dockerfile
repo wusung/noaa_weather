@@ -1,7 +1,6 @@
-FROM jdk:latest
+FROM java:openjdk-8-jdk
 
 RUN apt-get update &&\
-    apt-get install -y default-jdk &&\
     apt-get install -y maven 
 ADD . /app
 WORKDIR /app
