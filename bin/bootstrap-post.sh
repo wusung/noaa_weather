@@ -17,4 +17,5 @@ apt-get install -y python-pip
 pip2 install cqlsh
 pip3 install cqlsh
 
-#:wq mount -t vboxsf -o uid=`id -u vagrant`,gid=`id -g vagrant`,dmode=755,fmode=644 . /vagrant
+mount -t vboxsf -o uid=`id -u vagrant`,gid=`id -g vagrant`,dmode=755,fmode=644 vagrant /vagrant
+
