@@ -3,6 +3,7 @@ from __future__ import with_statement
 
 import os
 import re
+import sys
 
 import pymongo
 from fabric.api import local
@@ -108,8 +109,8 @@ def insert_data(filename):
 
             db.collection.insert(w_data)
 
-    #YK: TODO: create index
-
+    db.collection.create_index([("station", pymongo.ASCENDING), ("date", pymongo.ASCENDING), ("time", pymongo.ASCENDING)])
+    db.collection.create_index([("date", pymongo.ASCENDING)])
 
 
 def handle_raw_file(filename):
@@ -120,7 +121,10 @@ def handle_raw_file(filename):
     local("rm -rf %s %s" % (filename.replace('.gz', ''), filename.replace('.gz', '.ssv')))
 
 def process(path="./"):
-    for root, dirs, files in os.walk(path):
+    print(path)
+    walk_path = os.walk(path)       
+    
+    for root, dirs, files in walk_path:
         for f_name in files:
              match = weather_file.match(f_name)
              if match:
@@ -128,6 +132,9 @@ def process(path="./"):
 
 
 if __name__ == "__main__":
-    process()
+    path = "./"
+    if len(sys.argv) >= 2:
+        path = sys.argv[1] 
+    process(path)
     #insert_data("test/010000-99999-2001.ssv")
 
