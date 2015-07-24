@@ -17,5 +17,5 @@ pip2 install cqlsh
 pip3 install cqlsh
 pip install docker-compose
 
-mount -t vboxsf -o uid=`id -u vagrant`,gid=`id -g vagrant`,dmode=755,fmode=644 vagrant /vagrant
+mount -t vboxsf -o uid=`id -u vagrant`,gid=`id -g vagrant`,dmode=755,fmode=744 vagrant /vagrant
 
