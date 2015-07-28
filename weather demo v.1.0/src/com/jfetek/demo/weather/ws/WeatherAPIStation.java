@@ -1,5 +1,8 @@
 package com.jfetek.demo.weather.ws;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -27,13 +30,12 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
 /**
- * Servlet implementation class WeatherAPIStation
+ * Servlet implementation class WeatherAPIStation, Search weather station by country or lat/lng
  */
+@SuppressWarnings("serial")
 public class WeatherAPIStation extends HttpServlet {
-	
-	public static final String 	VERSION	= "0";
-
-
+	private static final Logger logger = LoggerFactory.getLogger(WeatherAPIStation.class);	
+	public static final String 	VERSION	= "0";	
 	static final double R	= 6371;	// earth radius
 	static double distance(double lat1, double lng1, double lat2, double lng2) {
 		lat1 = lat1 * Math.PI / 180;
@@ -57,12 +59,16 @@ public class WeatherAPIStation extends HttpServlet {
 
 			_handleRequest(params, request, response, out);
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("doGet() failed.", e);
+			JSONObject json = JsonUtil.getBasicJson(ErrorCode.error(e));
+			JsonUtil.addField(json, "data", "{}");
+			JsonUtil.addField(json, "version", VERSION);
+			try {
+				json.write(out);
+			} catch (JSONException e1) {
+				logger.error("json.write() failed.", e1);
+			}
 		} finally {
 			if (null != out) {
 				try {
@@ -79,6 +85,7 @@ public class WeatherAPIStation extends HttpServlet {
 		String g_country = params.trimParam("country");
 		double g_lat = params.getDoubleParam("lat", -999);
 		double g_lng = params.getDoubleParam("lng", -999);
+		int limit = params.getIntParam("limit", 10);
 		
 		HashMap<String,List<?>> map = new HashMap<String,List<?>>(4);
 		map.put("columns", Arrays.asList("id", "name", "date_range", "geo"));
@@ -95,24 +102,33 @@ public class WeatherAPIStation extends HttpServlet {
 			BasicDBObject near = new BasicDBObject();
 			near.append("$near", Arrays.asList(g_lng, g_lat));
 			query.append("geo", near);
-			c = station.find(query, new BasicDBObject("_id", 1).append("usaf", 1).append("wban", 1).append("name", 1).append("state", 1).append("date_range", 1).append("geo", 1))
-					.limit(10);
+			c = station.find(query, new BasicDBObject("_id", 1)
+					.append("usaf", 1)
+					.append("wban", 1)
+					.append("name", 1)
+					.append("state", 1)
+					.append("date_range", 1)
+					.append("geo", 1))
+					.limit(limit);			
 		}
 		else {
 			query.append("country", g_country);
-			c = station.find(query, new BasicDBObject("_id", 1).append("usaf", 1).append("wban", 1).append("name", 1).append("state", 1).append("date_range", 1).append("geo", 1));
+			c = station.find(query, new BasicDBObject("_id", 1)
+					.append("usaf", 1)
+					.append("wban", 1)
+					.append("name", 1)
+					.append("state", 1)
+					.append("date_range", 1)
+					.append("geo", 1));
 		}
 		
-//		out.write("[");
 		int count = 0;
 		for (DBObject o : c) {
 			BasicDBObject data = (BasicDBObject) o;
-//			if (count++ > 0) out.write(",");
 			BasicDBList geo = (BasicDBList) data.get("geo");
 			double lng = (Double) geo.get(0);
 			double lat = (Double) geo.get(1);
 			data.append("dist", distance(g_lat, g_lng, lat, lng));
-//			out.write(data.toString());
 			idxList.add(count++);
 			
 			ArrayList<Object> arr = new ArrayList<Object>(4);
@@ -122,8 +138,6 @@ public class WeatherAPIStation extends HttpServlet {
 			arr.add(data.getString("geo"));
 			dataList.add(arr);
 		}
-//		out.write("]");
-		
 
 		JSONObject json = JsonUtil.getBasicJson(ErrorCode.ok());
 		String resStr = JsonUtil.makeJsonize(map).toString();

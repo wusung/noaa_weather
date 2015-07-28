@@ -65,15 +65,16 @@ public class WeatherByStation extends HttpServlet {
 		try {
 			out = response.getWriter();
 			_handleRequest(params, request, response, out);
-		} catch (IOException e) {
-			e.printStackTrace();
-			logger.error("doGet() failed.", e);
-		} catch (JSONException e) {
-			e.printStackTrace();
-			logger.error("doGet() failed.", e);
 		} catch (Exception e) {
-			e.printStackTrace();
 			logger.error("doGet() failed.", e);
+			JSONObject json = JsonUtil.getBasicJson(ErrorCode.error(e));
+			JsonUtil.addField(json, "data", "{}");
+			JsonUtil.addField(json, "version", VERSION);
+			try {
+				json.write(out);
+			} catch (JSONException e1) {
+				logger.error("json.write() failed.", e1);
+			}
 		} finally {
 			if (null != out) {
 				try {
