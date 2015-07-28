@@ -147,7 +147,7 @@ public class WeatherAPI1 extends HttpServlet {
 		long ts = System.currentTimeMillis();
 		if ("d".equals(g_sample)) {
 			// daily base
-			ArrayList<String> exp_cols = new ArrayList<String>(4*columns.length);
+			ArrayList<String> exp_cols = new ArrayList<String>(3*columns.length);
 			for (int i = 0, lenCol = columns.length; i < lenCol; ++i) {
 				String col = columns[i];
 				if ("date".equals(col)) {
@@ -159,7 +159,7 @@ public class WeatherAPI1 extends HttpServlet {
 					exp_cols.add("min_"+col);
 					exp_cols.add("max_"+col);
 					exp_cols.add("avg_"+col);
-					exp_cols.add("sum_"+col);
+					//exp_cols.add("sum_"+col);
 				}
 			}
 			map.put("columns", exp_cols);
@@ -180,7 +180,7 @@ public class WeatherAPI1 extends HttpServlet {
 		}
 		else if ("w".equals(g_sample)) {
 			// daily base
-			ArrayList<String> exp_cols = new ArrayList<String>(4*columns.length);
+			ArrayList<String> exp_cols = new ArrayList<String>(3*columns.length);
 			for (int i = 0, lenCol = columns.length; i < lenCol; ++i) {
 				String col = columns[i];
 				if ("date".equals(col)) {
@@ -192,7 +192,7 @@ public class WeatherAPI1 extends HttpServlet {
 					exp_cols.add("min_"+col);
 					exp_cols.add("max_"+col);
 					exp_cols.add("avg_"+col);
-					exp_cols.add("sum_"+col);
+					//exp_cols.add("sum_"+col);
 				}
 			}
 			map.put("columns", exp_cols);
@@ -213,7 +213,7 @@ public class WeatherAPI1 extends HttpServlet {
 		}
 		else if ("m".equals(g_sample)) {
 			// daily base
-			ArrayList<String> exp_cols = new ArrayList<String>(4*columns.length);
+			ArrayList<String> exp_cols = new ArrayList<String>(3*columns.length);
 			for (int i = 0, lenCol = columns.length; i < lenCol; ++i) {
 				String col = columns[i];
 				if ("date".equals(col)) {
@@ -225,7 +225,7 @@ public class WeatherAPI1 extends HttpServlet {
 					exp_cols.add("min_"+col);
 					exp_cols.add("max_"+col);
 					exp_cols.add("avg_"+col);
-					exp_cols.add("sum_"+col);
+					//exp_cols.add("sum_"+col);
 				}
 			}
 			map.put("columns", exp_cols);

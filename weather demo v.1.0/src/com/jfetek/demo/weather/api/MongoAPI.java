@@ -130,6 +130,7 @@ public class MongoAPI {
 		for (DBObject o : c) {
 			BasicDBObject data = (BasicDBObject) o;
 			ArrayList<Object> row = new ArrayList<Object>(len);
+			row.add(station);
 			for (int i = 0; i < len; ++i) {
 				String s = data.getString( columns.get(i) );
 				if (null == s) {
@@ -214,16 +215,13 @@ public class MongoAPI {
 			}
 
 			for (int i = 0; i < len; ++i) {
-				//row.add(o.get(columns.get(i)));
 				String col = columns.get(i);
 				String s = data.getString( col );
 				if (null == s) {
 				}
 				else {
 					try {
-						Double d = Double.valueOf(s);
-						
-						// if numeric...
+						Double d = Double.valueOf(s);						
 						DataSummary dsum = (DataSummary) m.get(col);
 						if (null == dsum) {
 							dsum = new DataSummary();
@@ -240,28 +238,26 @@ public class MongoAPI {
 		
 		ArrayList<ArrayList<Object>> list = new ArrayList<ArrayList<Object>>(len);
 		for (Entry<DailyGroupKey, HashMap<String,Object>> e : cache.entrySet()) {
-			DailyGroupKey key = e.getKey();
 			HashMap<String,Object> data = e.getValue();
 			
 			String date = data.get("date").toString();
 			
 			ArrayList<Object> row = new ArrayList<Object>(len);
+			row.add(station);
 			for (int i = 0; i < len; ++i) {
 				String col = columns.get(i);
 				if ("time".equals(col)) continue;
 				Object obj = data.get( col );
 				if (null == obj) {
-					row.add( -999.0 );
-					row.add( -999.0 );
-					row.add( -999.0 );
-					row.add( -999.0 );
+					row.add( null );
+					row.add( null );
+					row.add( null );
 				}
 				else if (obj instanceof DataSummary) {
 					DataSummary dsum = (DataSummary) obj;
 					row.add( dsum.getMin() );
 					row.add( dsum.getMax() );
 					row.add( dsum.getAvg() );
-					row.add( dsum.getSum() );
 				}
 				else {
 					row.add( obj.toString() );
@@ -270,7 +266,6 @@ public class MongoAPI {
 			
 			String datetime = date + " 00:00:00";
 			row.add(datetime);
-
 			list.add(row);
 		}
 		
@@ -401,6 +396,7 @@ public class MongoAPI {
 			String date = key.sunday.toString();
 			
 			ArrayList<Object> row = new ArrayList<Object>(len);
+			row.add(station);
 			for (int i = 0; i < len; ++i) {
 				String col = columns.get(i);
 				if ("time".equals(col)) continue;
@@ -410,17 +406,15 @@ public class MongoAPI {
 				else {
 					Object obj = data.get( col );
 					if (null == obj) {
-						row.add( -999.0 );
-						row.add( -999.0 );
-						row.add( -999.0 );
-						row.add( -999.0 );
+						row.add( null );
+						row.add( null );
+						row.add( null );
 					}
 					else if (obj instanceof DataSummary) {
 						DataSummary dsum = (DataSummary) obj;
 						row.add( dsum.getMin() );
 						row.add( dsum.getMax() );
 						row.add( dsum.getAvg() );
-						row.add( dsum.getSum() );
 					}
 					else {
 						row.add( obj.toString() );
@@ -567,6 +561,7 @@ public class MongoAPI {
 			String date = key.moy.firstDay().toString();
 			
 			ArrayList<Object> row = new ArrayList<Object>(len);
+			row.add(station);
 			for (int i = 0; i < len; ++i) {
 				String col = columns.get(i);
 				if ("time".equals(col)) continue;
@@ -576,17 +571,15 @@ public class MongoAPI {
 				else {
 					Object obj = data.get( col );
 					if (null == obj) {
-						row.add( -999.0 );
-						row.add( -999.0 );
-						row.add( -999.0 );
-						row.add( -999.0 );
+						row.add( null );
+						row.add( null );
+						row.add( null );
 					}
 					else if (obj instanceof DataSummary) {
 						DataSummary dsum = (DataSummary) obj;
 						row.add( dsum.getMin() );
 						row.add( dsum.getMax() );
 						row.add( dsum.getAvg() );
-						row.add( dsum.getSum() );
 					}
 					else {
 						row.add( obj.toString() );

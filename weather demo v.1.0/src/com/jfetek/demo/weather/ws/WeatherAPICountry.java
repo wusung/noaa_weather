@@ -98,10 +98,8 @@ public class WeatherAPICountry extends HttpServlet {
 		logger.debug("params={}", params.toString());
 
 		String g_country = params.trimParam("country");
-
 		double g_lat = params.getDoubleParam("lat", -999);
-		double g_lng = params.getDoubleParam("lng", -999);
-		
+		double g_lng = params.getDoubleParam("lng", -999);		
 		Date g_begin = params.getDateParam("begin_time");
 		Date g_end = params.getDateParam("end_time");
 		String sample_rate = params.getParam("sample_rate");
@@ -133,25 +131,25 @@ public class WeatherAPICountry extends HttpServlet {
 		MongoAPI api = new MongoAPI(Console.mongo.getDB("weather1"));
 		ArrayList<Station> stations = stationService.queryList(g_country, g_lat, g_lng);
 		
+		ArrayList<String> exp_cols = new ArrayList<String>(3*columns.length);
+		exp_cols.add("station");
+		for (int i = 0, lenCol = columns.length; i < lenCol; ++i) {
+			String col = columns[i];
+			if ("date".equals(col)) {
+				exp_cols.add(col);
+			}
+			else if ("time".equals(col)) {
+			}
+			else {
+				exp_cols.add("min_"+col);
+				exp_cols.add("max_"+col);
+				exp_cols.add("avg_"+col);
+			}
+		}
+		map.put("columns", exp_cols);
+		
 		if ("d".equals(sample_rate)) {
 			// daily base
-			ArrayList<String> exp_cols = new ArrayList<String>(4*columns.length);
-			for (int i = 0, lenCol = columns.length; i < lenCol; ++i) {
-				String col = columns[i];
-				if ("date".equals(col)) {
-					exp_cols.add(col);
-				}
-				else if ("time".equals(col)) {
-				}
-				else {
-					exp_cols.add("min_"+col);
-					exp_cols.add("max_"+col);
-					exp_cols.add("avg_"+col);
-					exp_cols.add("sum_"+col);
-				}
-			}
-			map.put("columns", exp_cols);
-			
 			for (Station s: stations) {
 				String station = s.getId();
 				for (int year = drange.first.year.value, end = drange.last.year.value; year <= end; ++year) {
@@ -170,22 +168,6 @@ public class WeatherAPICountry extends HttpServlet {
 		}
 		else if ("w".equals(sample_rate)) {
 			// weekly base
-			ArrayList<String> exp_cols = new ArrayList<String>(4*columns.length);
-			for (int i = 0, lenCol = columns.length; i < lenCol; ++i) {
-				String col = columns[i];
-				if ("date".equals(col)) {
-					exp_cols.add(col);
-				}
-				else if ("time".equals(col)) {
-				}
-				else {
-					exp_cols.add("min_"+col);
-					exp_cols.add("max_"+col);
-					exp_cols.add("avg_"+col);
-					exp_cols.add("sum_"+col);
-				}
-			}
-			map.put("columns", exp_cols);
 			for (Station s: stations) {
 				String station = s.getId();
 				for (int year = drange.first.year.value, end = drange.last.year.value; year <= end; ++year) {
@@ -203,24 +185,6 @@ public class WeatherAPICountry extends HttpServlet {
 			}
 		}
 		else if ("m".equals(sample_rate)) {
-			// monthly base
-			ArrayList<String> exp_cols = new ArrayList<String>(4*columns.length);
-			for (int i = 0, lenCol = columns.length; i < lenCol; ++i) {
-				String col = columns[i];
-				if ("date".equals(col)) {
-					exp_cols.add(col);
-				}
-				else if ("time".equals(col)) {
-				}
-				else {
-					exp_cols.add("min_"+col);
-					exp_cols.add("max_"+col);
-					exp_cols.add("avg_"+col);
-					exp_cols.add("sum_"+col);
-				}
-			}
-			map.put("columns", exp_cols);
-			
 			for (Station s: stations) {
 				String station = s.getId();
 				for (int year = drange.first.year.value, end = drange.last.year.value; year <= end; ++year) {
@@ -238,13 +202,11 @@ public class WeatherAPICountry extends HttpServlet {
 			}
 		}
 		else {
-			// raw base
-			map.put("columns", Arrays.asList(columns));
 			
 			for (Station s: stations) {
 				String station = s.getId();
 				for (int year = drange.first.year.value, end = drange.last.year.value; year <= end; ++year) {
-					Result<ArrayList<ArrayList<Object>>> result = api.queryWeatherByStation(year, station, drange, columns);
+					Result<ArrayList<ArrayList<Object>>> result = api.queryDailyWeatherByStation(year, station, drange, columns);
 					if (result.positive()) {
 						for (int i = 0, lenData =  result.data.size(); i < lenData; ++i) {
 							ArrayList<Object> arr = result.data.get(i);
@@ -256,6 +218,25 @@ public class WeatherAPICountry extends HttpServlet {
 					}
 				}
 			}
+			
+//			// raw base
+//			map.put("columns", Arrays.asList(columns));
+//			
+//			for (Station s: stations) {
+//				String station = s.getId();
+//				for (int year = drange.first.year.value, end = drange.last.year.value; year <= end; ++year) {
+//					Result<ArrayList<ArrayList<Object>>> result = api.queryWeatherByStation(year, station, drange, columns);
+//					if (result.positive()) {
+//						for (int i = 0, lenData =  result.data.size(); i < lenData; ++i) {
+//							ArrayList<Object> arr = result.data.get(i);
+//							String datetime = String.valueOf(arr.remove(arr.size()-1));
+//							DateTime dt = DateTime.valueOf(datetime);
+//							idxList.add(dt.timestamp);
+//							dataList.add(arr);	
+//						}
+//					}
+//				}
+//			}
 		}
 		
 		JSONObject json = JsonUtil.getBasicJson(ErrorCode.ok());

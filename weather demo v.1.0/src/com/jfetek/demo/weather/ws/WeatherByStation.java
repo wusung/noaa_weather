@@ -91,8 +91,7 @@ public class WeatherByStation extends HttpServlet {
 		}
 	}
 	
-	private void _handleRequest(Params params, HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
-		
+	private void _handleRequest(Params params, HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {		
 		logger.debug("params={}", params.toString());
 
 		String g_stations = params.trimParam("stations");
@@ -130,72 +129,40 @@ public class WeatherByStation extends HttpServlet {
 		ArrayList<ArrayList<?>> dataList = new ArrayList<ArrayList<?>>();
 		map.put("data", dataList);
 		
-		List<String> stations = Arrays.asList(g_stations.split(","));		
-		if ("d".equals(sample_rate)) {
-			// daily base
-			ArrayList<String> exp_cols = new ArrayList<String>(4 * columns.length);
-			for (int i = 0, lenCol = columns.length; i < lenCol; ++i) {
-				String col = columns[i];
-				if ("date".equals(col)) {
-					exp_cols.add(col);
-				}
-				else if ("time".equals(col)) {
-				}
-				else {
-					exp_cols.add("min_" + col);
-					exp_cols.add("max_" + col);
-					exp_cols.add("avg_" + col);
-					exp_cols.add("sum_" + col);
-				}
+		ArrayList<String> exp_cols = new ArrayList<String>(3*columns.length);
+		exp_cols.add("station");
+		for (int i = 0, lenCol = columns.length; i < lenCol; ++i) {
+			String col = columns[i];
+			if ("date".equals(col)) {
+				exp_cols.add(col);
 			}
-			map.put("columns", exp_cols);
-			
+			else if ("time".equals(col)) {
+			}
+			else {
+				exp_cols.add("min_"+col);
+				exp_cols.add("max_"+col);
+				exp_cols.add("avg_"+col);
+			}
+		}
+		map.put("columns", exp_cols);
+		
+		if ("d".equals(sample_rate) || "r".equals(sample_rate)) {
+			// daily base
 			dataList.addAll(weatherService.queryDailyList(g_stations, drange, columns));
 		}
 		else if ("w".equals(sample_rate)) {
 			// weekly base
-			ArrayList<String> exp_cols = new ArrayList<String>(4*columns.length);
-			for (int i = 0, lenCol = columns.length; i < lenCol; ++i) {
-				String col = columns[i];
-				if ("date".equals(col)) {
-					exp_cols.add(col);
-				}
-				else if ("time".equals(col)) {
-				}
-				else {
-					exp_cols.add("min_" + col);
-					exp_cols.add("max_" + col);
-					exp_cols.add("avg_" + col);
-					exp_cols.add("sum_" + col);
-				}
-			}
-			map.put("columns", exp_cols);			
 			dataList.addAll(weatherService.queryWeeklyList(g_stations, drange, columns));
 		}
 		else if ("m".equals(sample_rate)) {
 			// monthly base
-			ArrayList<String> exp_cols = new ArrayList<String>(4*columns.length);
-			for (int i = 0, lenCol = columns.length; i < lenCol; ++i) {
-				String col = columns[i];
-				if ("date".equals(col)) {
-					exp_cols.add(col);
-				}
-				else if ("time".equals(col)) {
-				}
-				else {
-					exp_cols.add("min_" + col);
-					exp_cols.add("max_" + col);
-					exp_cols.add("avg_" + col);
-					exp_cols.add("sum_" + col);
-				}
-			}
-			map.put("columns", exp_cols);
 			dataList.addAll(weatherService.queryMonthlyList(g_stations, drange, columns));
 		}
 		else {
-			// raw base
-			map.put("columns", Arrays.asList(columns));
-			dataList.addAll(weatherService.queryRawList(g_stations, drange, columns));
+			dataList.addAll(weatherService.queryDailyList(g_stations, drange, columns));
+//			// raw base
+//			map.put("columns", Arrays.asList(columns));
+//			dataList.addAll(weatherService.queryRawList(g_stations, drange, columns));
 		}
 
 		// Build indexes with timestamp for pandas
