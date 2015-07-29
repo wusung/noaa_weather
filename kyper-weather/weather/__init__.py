@@ -36,6 +36,11 @@ except Exception:
 VERSION = "0"
 SERVICE = "weather"
 FIELDS = ["date", "time", "direction", "speed", "temperature", "dewp", "min", "max"]
+RAW_FIELDS = ["date", "time", "direction", "speed", "gus", "clg", "skc", "l", 
+              "m", "h", "vsb", "mw", "aw", "w", "slp", "alt", "stp", "pcp01", "pcp06",
+              "pcp24", "pcpxx", "sd"]
+SUM_FIELDS = ["speed", "gus", "vsb", "temerature", "dewp", 
+              "slp", "stp", "pcpxx", "sd"]
 
 
 def weather_address(address, start_dt, end_dt, sample_rate="r", fields=FIELDS):
@@ -53,7 +58,7 @@ def weather_address(address, start_dt, end_dt, sample_rate="r", fields=FIELDS):
     return pd.read_json(data, orient="split")
 
 
-def weather_station(station, start_dt, end_dt, sample_rate="r", fields=FIELDS):
+def weather_station(station, start_dt, end_dt, sample_rate="d", fields=FIELDS):
     params = dict(
         station=station,
         begin_time=start_dt,
@@ -66,10 +71,9 @@ def weather_station(station, start_dt, end_dt, sample_rate="r", fields=FIELDS):
     return pd.read_json(data, orient="split")
 
 
-def weather_geo(lat, lng, start_dt, end_dt, sample_rate="R", fields=FIELDS):
+def weather_stations(stations, start_dt, end_dt, sample_rate="d", fields=SUM_FIELDS):
     params = dict(
-        lat=lat,
-        lng=lng,
+        stations=",".join(stations),
         begin_time=start_dt,
         end_time=end_dt,
         fields=",".join(fields),
@@ -79,36 +83,7 @@ def weather_geo(lat, lng, start_dt, end_dt, sample_rate="R", fields=FIELDS):
     data = get_data(SERVICE, VERSION, sys._getframe().f_code.co_name, **params)
     return pd.read_json(data, orient="split")
 
-
-def geo_api(address):
-    city = ""
-    state = ""
-    country = ""
-    addresses = address.split(",")
-    if addresses:
-        if addresses.__len__() == 3:
-            city = addresses[0]
-            state = addresses[1]
-            country = addresses[2]
-        elif addresses.__len__() == 2:
-            city = addresses[0]
-            country = addresses[1]
-        else:
-            city = addresses[0]
-
-    params = dict(
-        city=city,
-        state=state,
-        country=country
-    )
-
-    data = get_data(SERVICE, VERSION, sys._getframe().f_code.co_name, **params)
-    json_obj = pd.read_json(data, orient="records")
-    ll = ast.literal_eval(json_obj["data"][0]["geo"])
-    return ll[1], ll[0]
-
-
-def station_list(country, lat=-999, lng=-999):
+def station_list(country=None, lat=-999, lng=-999):
     """
     Find Station by Count Name or Latitude and Longtitude
     :param country:
@@ -121,13 +96,19 @@ def station_list(country, lat=-999, lng=-999):
         lat=lat,
         lng=lng
     )
-    return get_data(SERVICE, VERSION, sys._getframe().f_code.co_name, **params)
+    data = get_data(SERVICE, VERSION, sys._getframe().f_code.co_name, **params)
+    return pd.read_json(data, orient="split")
 
 
-def historical(address, start_dt, end_dt, fields, sample_rate):
-    station = _find_station(address=address)
-    return weather_station(station=station, start_dt=start_dt, end_dt=end_dt, sample_rate=sample_rate, fields=fields)
+def weather_country(country, start_dt=None, end_dt=None, sample_rate="r", fields=SUM_FIELDS):
+    params = dict(
+        country=country,
+        begin_time=start_dt,
+        end_time=end_dt,
+        sample_rate=sample_rate,
+        fields=",".join(fields)
+    )
+    data = get_data(SERVICE, VERSION, sys._getframe().f_code.co_name, **params)
+    return pd.read_json(data, orient="split")
 
 
-def _find_station(address):
-    return address
