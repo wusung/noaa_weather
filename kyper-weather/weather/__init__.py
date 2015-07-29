@@ -39,36 +39,8 @@ FIELDS = ["date", "time", "direction", "speed", "temperature", "dewp", "min", "m
 RAW_FIELDS = ["date", "time", "direction", "speed", "gus", "clg", "skc", "l", 
               "m", "h", "vsb", "mw", "aw", "w", "slp", "alt", "stp", "pcp01", "pcp06",
               "pcp24", "pcpxx", "sd"]
-SUM_FIELDS = ["speed", "gus", "vsb", "temerature", "dewp", 
+SUM_FIELDS = ["date", "time", "speed", "gus", "vsb", "temperature", "dewp", 
               "slp", "stp", "pcpxx", "sd"]
-
-
-def weather_address(address, start_dt, end_dt, sample_rate="r", fields=FIELDS):
-    lat, lng = _find_station(address)
-    params = dict(
-        lat=lat,
-        lng=lng,
-        begin_time=start_dt,
-        end_time=end_dt,
-        fields=",".join(fields),
-        sample_rate=sample_rate
-    )
-
-    data = get_data(SERVICE, VERSION, sys._getframe().f_code.co_name, **params)
-    return pd.read_json(data, orient="split")
-
-
-def weather_station(station, start_dt, end_dt, sample_rate="d", fields=FIELDS):
-    params = dict(
-        station=station,
-        begin_time=start_dt,
-        end_time=end_dt,
-        fields=",".join(fields),
-        sample_rate=sample_rate
-    )
-
-    data = get_data(SERVICE, VERSION, sys._getframe().f_code.co_name, **params)
-    return pd.read_json(data, orient="split")
 
 
 def weather_stations(stations, start_dt, end_dt, sample_rate="d", fields=SUM_FIELDS):
@@ -83,7 +55,7 @@ def weather_stations(stations, start_dt, end_dt, sample_rate="d", fields=SUM_FIE
     data = get_data(SERVICE, VERSION, sys._getframe().f_code.co_name, **params)
     return pd.read_json(data, orient="split")
 
-def station_list(country=None, lat=-999, lng=-999):
+def station_list(country=None, lat=-999, lng=-999, limit=10):
     """
     Find Station by Count Name or Latitude and Longtitude
     :param country:
@@ -94,13 +66,14 @@ def station_list(country=None, lat=-999, lng=-999):
     params = dict(
         country=country,
         lat=lat,
-        lng=lng
+        lng=lng,
+        limit=limit
     )
     data = get_data(SERVICE, VERSION, sys._getframe().f_code.co_name, **params)
     return pd.read_json(data, orient="split")
 
 
-def weather_country(country, start_dt=None, end_dt=None, sample_rate="r", fields=SUM_FIELDS):
+def weather_country(country, start_dt=None, end_dt=None, sample_rate="d", fields=SUM_FIELDS):
     params = dict(
         country=country,
         begin_time=start_dt,
