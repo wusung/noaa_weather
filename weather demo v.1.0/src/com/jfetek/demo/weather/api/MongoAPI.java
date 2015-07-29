@@ -191,7 +191,9 @@ public class MongoAPI {
 			query.pop();
 		}
 		BasicDBObjectBuilder cols = BasicDBObjectBuilder.start();
-		cols.add("date", 1).add("time", 1);
+		cols.add("station", 1)
+			.add("date", 1)
+		 	.add("time", 1);
 		for (int i = 0, len = columns.size(); i < len; ++i) {
 			String c = columns.get(i);
 			if (!"date".equals(c) && !"time".equals(c)) {
@@ -206,7 +208,7 @@ public class MongoAPI {
 			BasicDBObject data = (BasicDBObject) o;
 			
 			String date = data.getString("date");
-			DailyGroupKey key = new DailyGroupKey(date, station);
+			DailyGroupKey key = new DailyGroupKey(date, data.getString("station"));
 
 			HashMap<String,Object> m = cache.get(key);
 			if (null == m) {
@@ -243,7 +245,7 @@ public class MongoAPI {
 			String date = data.get("date").toString();
 			
 			ArrayList<Object> row = new ArrayList<Object>(len);
-			row.add(station);
+			row.add(e.getKey().station);
 			for (int i = 0; i < len; ++i) {
 				String col = columns.get(i);
 				if ("time".equals(col)) continue;
@@ -340,7 +342,9 @@ public class MongoAPI {
 			query.pop();
 		}
 		BasicDBObjectBuilder cols = BasicDBObjectBuilder.start();
-		cols.add("date", 1).add("time", 1);
+		cols.add("station", 1)
+			.add("date", 1)
+			.add("time", 1);
 		for (int i = 0, len = columns.size(); i < len; ++i) {
 			String c = columns.get(i);
 			if (!"date".equals(c) && !"time".equals(c)) {
@@ -355,7 +359,7 @@ public class MongoAPI {
 			BasicDBObject data = (BasicDBObject) o;
 			
 			String date = data.getString("date");
-			WeeklyGroupKey key = new WeeklyGroupKey(date, station);
+			WeeklyGroupKey key = new WeeklyGroupKey(date, data.getString("station"));
 
 			HashMap<String,Object> m = cache.get(key);
 			if (null == m) {
@@ -364,7 +368,6 @@ public class MongoAPI {
 			}
 
 			for (int i = 0; i < len; ++i) {
-				//row.add(o.get(columns.get(i)));
 				String col = columns.get(i);
 				String s = data.getString( col );
 				if (null == s) {
@@ -396,7 +399,7 @@ public class MongoAPI {
 			String date = key.sunday.toString();
 			
 			ArrayList<Object> row = new ArrayList<Object>(len);
-			row.add(station);
+			row.add(e.getKey().station);
 			for (int i = 0; i < len; ++i) {
 				String col = columns.get(i);
 				if ("time".equals(col)) continue;
@@ -506,7 +509,9 @@ public class MongoAPI {
 			query.pop();
 		}
 		BasicDBObjectBuilder cols = BasicDBObjectBuilder.start();
-		cols.add("date", 1).add("time", 1);
+		cols.add("station", 1)
+			.add("date", 1)
+			.add("time", 1);
 		for (int i = 0, len = columns.size(); i < len; ++i) {
 			String c = columns.get(i);
 			if (!"date".equals(c) && !"time".equals(c)) {
@@ -521,7 +526,7 @@ public class MongoAPI {
 			BasicDBObject data = (BasicDBObject) o;
 			
 			String date = data.getString("date");
-			MonthlyGroupKey key = new MonthlyGroupKey(date, station);
+			MonthlyGroupKey key = new MonthlyGroupKey(date, data.getString("station"));
 
 			HashMap<String,Object> m = cache.get(key);
 			if (null == m) {
@@ -561,7 +566,7 @@ public class MongoAPI {
 			String date = key.moy.firstDay().toString();
 			
 			ArrayList<Object> row = new ArrayList<Object>(len);
-			row.add(station);
+			row.add(e.getKey().station);
 			for (int i = 0; i < len; ++i) {
 				String col = columns.get(i);
 				if ("time".equals(col)) continue;
