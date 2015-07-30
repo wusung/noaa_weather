@@ -3,7 +3,6 @@ web:
   build: "./weather demo v.1.0"
   links:
     - mongo:mongo
-    - cassnode1:cassandra
   ports:
     - "8081:8080"
   hostname:
@@ -29,35 +28,4 @@ spider:
     - mongo:mongo
   hostname:
     spider
-
-cassnode1:
-  build: ./cassandra
-  links:
-    - cassnode2
-    - cassnode3
-  ports:
-    - "9042:9042"
-  hostname:
-    cassnode1
-  volumes:
-    - /vdisk/data1:/var/lib/cassandra/data
-  command: -name "DataGuard Cluster" -seeds "cassnode1,cassnode2,cassnode3"
-
-cassnode2:
-  build: ./cassandra
-  links:
-    - cassnode3
-  hostname:
-    cassnode2
-  volumes:
-    - /vdisk/data2:/var/lib/cassandra/data
-  command: -name "DataGuard Cluster" -seeds "cassnode1,cassnode2,cassnode3"
-
-cassnode3:
-  build: ./cassandra
-  hostname:
-    cassnode3
-  volumes:
-    - /vdisk/data3:/var/lib/cassandra/data
-  command: -name "DataGuard Cluster" -seeds "cassnode1,cassnode2,cassnode3"
 
