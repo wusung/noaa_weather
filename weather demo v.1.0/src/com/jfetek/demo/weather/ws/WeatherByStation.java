@@ -2,8 +2,8 @@ package com.jfetek.demo.weather.ws;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -124,7 +124,7 @@ public class WeatherByStation extends HttpServlet {
 		HashMap<String,List<?>> map = new HashMap<String,List<?>>(4);		
 		String g_columns = params.getParam("fields", "");
 		String[] columns = g_columns.split(",");		
-		ArrayList<Long> idxList = new ArrayList<Long>();
+		ArrayList<String> idxList = new ArrayList<String>();
 		map.put("index", idxList);
 		ArrayList<ArrayList<?>> dataList = new ArrayList<ArrayList<?>>();
 		map.put("data", dataList);
@@ -169,7 +169,8 @@ public class WeatherByStation extends HttpServlet {
 		for (ArrayList<?> arr: dataList) {
 			String datetime = String.valueOf(arr.remove(arr.size() - 1));
 			DateTime dt = DateTime.valueOf(datetime);
-			idxList.add(dt.timestamp);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			idxList.add(sdf.format(new java.util.Date(dt.timestamp)));
 		}
 		
 		JSONObject json = JsonUtil.getBasicJson(ErrorCode.ok());

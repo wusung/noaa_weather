@@ -3,3 +3,6 @@ test:
 green:
 	green . -a
 clean:
+
+scp-wrapper:
+	scp ./weather/__init__.py wusung.peng@weather.kyper.co:~/
