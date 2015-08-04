@@ -5,6 +5,8 @@ import requests
 import json
 import ast
 
+from collections import namedtuple
+
 try:
     from ..utils import get_data
 except Exception:
@@ -45,22 +47,25 @@ SUM_FIELDS = ["date", "time", "speed", "gus", "vsb", "temperature", "dewp",
 
 def weather_stations(stations, start_date, end_date, freq="d", fields=SUM_FIELDS):
     """
-    :param stations: list[string], The id of weather stations
-    :param start_date: str, The optional start date for the query (optional).
-    :param end_date: str, The optional end date for the query (optional).
-    :param freq: str: The returned frequence, can be one of 'd', 'w', 'm', which stand for daily, weekly and monthly
-    :param fields: list[string], the returned fields, can be the following values. ["date", "time", "speed", "gus", "vsb", "temperature", "dewp", "slp", "stp", "pcpxx", "sd"] which means as the following.
-      date: Date
-      time: Time
-      speed: Wind speed
-      gus: Gust in miles per hour
-      vsb: Visibility in statute miles to nearest tenth
-      temperature: Temperature
-      slp: Sea level pressure in millibars to nearest tenth
-      stp: Station pressure in millibars to nearest tenth
-      pcpxx: Liquid precip report in inches and hundredths, for a period
-      sd: Snow depth
-    :return pandas.DataFrame: Return a pandas.DataFrame contains weather data in the stations
+    Args:
+        stations: list[string], The id of weather stations
+        start_date: str, The optional start date for the query (optional).
+        end_date: str, The optional end date for the query (optional).
+        freq: str: The returned frequence, can be one of 'd', 'w', 'm', which stand for daily, weekly and monthly
+        fields: list[string], the returned fields, can be the following values. ["date", "time", "speed", "gus", "vsb", "temperature", "dewp", "slp", "stp", "pcpxx", "sd"] which means as the following.
+            date: Date
+            time: Time
+            speed: Wind speed in miles per hour
+            gus: Gust in miles per hour
+            vsb: Visibility in statute miles to nearest tenth
+            temperature: Temperature in fahrenheit
+            dewp: Dew point in fahrenheit
+            slp: Sea level pressure in millibars to nearest tenth
+            stp: Station pressure in millibars to nearest tenth
+            pcpxx: Liquid precip report in inches and hundredths, for a period
+            sd: Snow depth in inches
+    Returns:
+        pandas.DataFrame: Return a pandas.DataFrame contains weather data in the stations. Returns DataFrame.emtpy if none where found.
     """
     params = dict(
         stations=",".join(stations),
@@ -74,12 +79,13 @@ def weather_stations(stations, start_date, end_date, freq="d", fields=SUM_FIELDS
     return result.sort_index(by=["date"], ascending=[True])
 
 def station_list(country=None, lat=-999, lng=-999, limit=10):
-    """
-    Find Station by country Name or Latitude and Longtitude.
-    :param country: The country name for the query (optional). Refer to ftp://ftp.ncdc.noaa.gov/pub/data/noaa/country-list.txt
-    :param lat: The latitue of the location for the query (optional)
-    :param lng: The longitude of the location for the query (optional)
-    :return pandas.DataFrame: Return a pandas.DataFrame contains stations in the country or location.
+    """ Find Station by country Name or Latitude and Longtitude.
+    Args:
+        country: The country name for the query (optional). Refer to ftp://ftp.ncdc.noaa.gov/pub/data/noaa/country-list.txt
+        lat: The latitue of the location for the query (optional)
+        lng: The longitude of the location for the query (optional)
+    Returns:
+        pandas.DataFrame: Return a pandas.DataFrame contains stations in the country or location. Returns DataFrame.emtpy if none where found.
     """
     params = dict(
         country=country,
@@ -89,4 +95,25 @@ def station_list(country=None, lat=-999, lng=-999, limit=10):
     )
     data = get_data(SERVICE, VERSION, sys._getframe().f_code.co_name, **params)
     return pd.read_json(data, orient="split")
+
+def get_fields():
+    """ List all fields provided by weather data API.
+    Returns:
+        A pandas.DataFrame of all fields provided by weather data API.
+    """
+
+    Field = namedtuple('Field','Name Description')
+    all_fields = [ Field("date","Date"),
+                   Field("time", "Time" ),
+                   Field("speed", "Wind speed in miles per hour"),
+                   Field("gus", "Guest in miles per hour"),
+                   Field("vsb", "Visibility in statute miles to nearest tenth"),
+                   Field("temperature", "Temperature in fahrenheit"),
+                   Field("dewp", "Dew point in fahrenheit"),
+                   Field("slp", "Sea level pressure in millibars to nearest tenth"),
+                   Field("stp", "Liquid precip report in inches and hundredths, for a period"),
+                   Field("pcpxx", "Liquid precip report in inches and hundredths, for a period"),
+                   Field("sd", "Snow depth in inches") ]
+
+    return pd.DataFrame(all_fields, columns=["Name","Description"])
 
