@@ -83,6 +83,7 @@ def station_list(country=None, lat=-999, lng=-999, limit=10):
         country: The country name for the query (optional). Refer to ftp://ftp.ncdc.noaa.gov/pub/data/noaa/country-list.txt
         lat: The latitue of the location for the query (optional)
         lng: The longitude of the location for the query (optional)
+        limit: Limit of returning records. Default: 10 (optional)
     Returns:
         pandas.DataFrame: Return a pandas.DataFrame contains stations in the country or location. Returns DataFrame.emtpy if none where found.
     """
@@ -102,16 +103,16 @@ def get_fields():
     """
 
     Field = namedtuple('Field','Name Description')
-    all_fields = [ Field("date","Date"),
-                   Field("speed", "Wind speed in miles per hour"),
-                   Field("gus", "Guest in miles per hour"),
-                   Field("vsb", "Visibility in statute miles to nearest tenth"),
-                   Field("temperature", "Temperature in fahrenheit"),
-                   Field("dewp", "Dew point in fahrenheit"),
-                   Field("slp", "Sea level pressure in millibars to nearest tenth"),
-                   Field("stp", "Liquid precip report in inches and hundredths, for a period"),
-                   Field("pcpxx", "Liquid precip report in inches and hundredths, for a period"),
-                   Field("sd", "Snow depth in inches") ]
+    all_fields = [Field("date","Date"),
+                  Field("speed", "Wind speed in miles per hour"),
+                  Field("gus", "Gust in miles per hour"),
+                  Field("vsb", "Visibility in statute miles to nearest tenth"),
+                  Field("temperature", "Temperature in fahrenheit"),
+                  Field("dewp", "Dew point in fahrenheit"),
+                  Field("slp", "Sea level pressure in millibars to nearest tenth"),
+                  Field("stp", "Station pressure in millibars to nearest tenth"),
+                  Field("pcpxx", "Liquid precip report in inches and hundredths, for a period"),
+                  Field("sd", "Snow depth in inches")]
 
     return pd.DataFrame(all_fields, columns=["Name","Description"])
 
