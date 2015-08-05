@@ -41,7 +41,7 @@ FIELDS = ["date", "time", "direction", "speed", "temperature", "dewp", "min", "m
 RAW_FIELDS = ["date", "time", "direction", "speed", "gus", "clg", "skc", "l", 
               "m", "h", "vsb", "mw", "aw", "w", "slp", "alt", "stp", "pcp01", "pcp06",
               "pcp24", "pcpxx", "sd"]
-SUM_FIELDS = ["date", "time", "speed", "gus", "vsb", "temperature", "dewp", 
+SUM_FIELDS = ["date", "speed", "gus", "vsb", "temperature", "dewp", 
               "slp", "stp", "pcpxx", "sd"]
 
 
@@ -52,9 +52,8 @@ def weather_stations(stations, start_date, end_date, freq="d", fields=SUM_FIELDS
         start_date: str, The optional start date for the query (optional).
         end_date: str, The optional end date for the query (optional).
         freq: str: The returned frequence, can be one of 'd', 'w', 'm', which stand for daily, weekly and monthly
-        fields: list[string], the returned fields, can be the following values. ["date", "time", "speed", "gus", "vsb", "temperature", "dewp", "slp", "stp", "pcpxx", "sd"] which means as the following.
+        fields: list[string], the returned fields, can be the following values. ["date", "speed", "gus", "vsb", "temperature", "dewp", "slp", "stp", "pcpxx", "sd"] which means as the following.
             date: Date
-            time: Time
             speed: Wind speed in miles per hour
             gus: Gust in miles per hour
             vsb: Visibility in statute miles to nearest tenth
@@ -104,7 +103,6 @@ def get_fields():
 
     Field = namedtuple('Field','Name Description')
     all_fields = [ Field("date","Date"),
-                   Field("time", "Time" ),
                    Field("speed", "Wind speed in miles per hour"),
                    Field("gus", "Guest in miles per hour"),
                    Field("vsb", "Visibility in statute miles to nearest tenth"),
