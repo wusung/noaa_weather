@@ -75,7 +75,8 @@ def weather_stations(stations, start_date, end_date, freq="d", fields=SUM_FIELDS
     )
     data = get_data(SERVICE, VERSION, sys._getframe().f_code.co_name, **params)
     result = pd.read_json(data, orient="split")                                                                       
-    return result.sort_index(by=["date"], ascending=[True])
+    return result.sort_index(ascending=[True])
+
 
 def station_list(country=None, lat=-999, lng=-999, limit=10):
     """ Find Station by country Name or Latitude and Longtitude.
