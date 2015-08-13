@@ -2,8 +2,6 @@
 import sys
 import pandas as pd
 import requests
-import json
-import ast
 
 from collections import namedtuple
 
@@ -29,11 +27,9 @@ except Exception:
     # Write Development Wrapper
     def get_data(service, version, method, **kwargs):
         end_point = "http://weather.kyper.co"
-        # end_point = "http://192.168.64.1:8080/weather-demo"
         req_url = "{SERVER}/{ACTION}".format(SERVER=end_point, ACTION=method)
         return _parse_response(requests.get(req_url, params=kwargs),
                                version).get("data")
-        # return json.loads(resp.text)["data"]
 
 VERSION = "0"
 SERVICE = "weather"
@@ -48,7 +44,7 @@ SUM_FIELDS = ["date", "speed", "gus", "vsb", "temperature", "dewp",
 def weather_stations(stations, start_date, end_date, freq="d", fields=SUM_FIELDS):
     """
     Args:
-        stations: list[string], The id of weather stations
+        stations: list[string], The id of weather stations. The number of stations should be less than 100.
         start_date: str, The optional start date for the query (optional).
         end_date: str, The optional end date for the query (optional).
         freq: str: The returned frequence, can be one of 'd', 'w', 'm', which stand for daily, weekly and monthly
@@ -66,6 +62,8 @@ def weather_stations(stations, start_date, end_date, freq="d", fields=SUM_FIELDS
     Returns:
         pandas.DataFrame: Return a pandas.DataFrame contains weather data in the stations. Returns DataFrame.emtpy if none where found.
     """
+    if len(stations) > 100:
+        raise Exception("The number of stations should be less than 100")
     params = dict(
         stations=",".join(stations),
         begin_time=start_date,
@@ -96,6 +94,7 @@ def station_list(country=None, lat=-999, lng=-999, limit=10):
     )
     data = get_data(SERVICE, VERSION, sys._getframe().f_code.co_name, **params)
     return pd.read_json(data, orient="split")
+
 
 def get_fields():
     """ List all fields provided by weather data API.
