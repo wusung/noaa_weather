@@ -1,6 +1,6 @@
 from datetime import datetime
-import unittest
 from pandas import DataFrame
+import unittest
 import weather
 
 
@@ -61,6 +61,9 @@ class TestWeather(unittest.TestCase):
     def test_station_list(self):
         stations = weather.station_list("US")
         #self.assertIsInstance(stations, dict.__class__)
+
+    def test_get_fields(self):
+        weather.get_fields()
 
     if __name__ == '__main__':
         unittest.main()
