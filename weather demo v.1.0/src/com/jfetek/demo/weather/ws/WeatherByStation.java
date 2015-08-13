@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -91,6 +92,11 @@ public class WeatherByStation extends HttpServlet {
 		}
 	}
 	
+	private static long getPreviousYear() {
+	    long DAY_IN_MS = 1000 * 60 * 60 * 24;
+	    return System.currentTimeMillis() - (180 * DAY_IN_MS);
+	}
+	
 	private void _handleRequest(Params params, HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {		
 		logger.debug("params={}", params.toString());
 
@@ -108,8 +114,10 @@ public class WeatherByStation extends HttpServlet {
 		}
 		
 		DateRange drange = null;
-		if (null == g_begin && null == g_end) {
-
+		if (null == g_begin && null == g_end) {			
+			Date start = Date.today();
+			Date end = new Date(getPreviousYear());
+			drange = DateRange.between(start, end);
 		}
 		else if (null == g_begin) {
 			drange = DateRange.is(g_end);
