@@ -41,7 +41,7 @@ SUM_FIELDS = ["date", "speed", "gus", "vsb", "temperature", "dewp",
               "slp", "stp", "pcpxx", "sd"]
 
 
-def weather_stations(stations, start_date, end_date, freq="d", fields=SUM_FIELDS):
+def weather_stations(stations, start_date, end_date, freq="d", fields=SUM_FIELDS, limit=1000):
     """
     Args:
         stations: list[string], The id of weather stations. The number of stations should be less than 100.
@@ -59,6 +59,7 @@ def weather_stations(stations, start_date, end_date, freq="d", fields=SUM_FIELDS
             stp: Station pressure in millibars to nearest tenth
             pcpxx: Liquid precip report in inches and hundredths, for a period
             sd: Snow depth in inches
+        limit: Limit of returning records. Default: 1000
     Returns:
         pandas.DataFrame: Return a pandas.DataFrame contains weather data in the stations. Returns DataFrame.emtpy if none where found.
     """
@@ -69,7 +70,8 @@ def weather_stations(stations, start_date, end_date, freq="d", fields=SUM_FIELDS
         begin_time=start_date,
         end_time=end_date,
         fields=",".join(fields),
-        sample_rate=freq
+        sample_rate=freq,
+        limit=limit
     )
     data = get_data(SERVICE, VERSION, sys._getframe().f_code.co_name, **params)
     result = pd.read_json(data, orient="split")                                                                       
@@ -80,9 +82,9 @@ def station_list(country=None, lat=-999, lng=-999, limit=10):
     """ Find Station by country Name or Latitude and Longtitude.
     Args:
         country: The country name for the query (optional). Refer to ftp://ftp.ncdc.noaa.gov/pub/data/noaa/country-list.txt
-        lat: The latitue of the location for the query (optional)
-        lng: The longitude of the location for the query (optional)
-        limit: Limit of returning records. Default: 10 (optional)
+        lat: The latitue of the location for the query
+        lng: The longitude of the location for the query
+        limit: Limit of returning records. Default: 10
     Returns:
         pandas.DataFrame: Return a pandas.DataFrame contains stations in the country or location. Returns DataFrame.emtpy if none where found.
     """

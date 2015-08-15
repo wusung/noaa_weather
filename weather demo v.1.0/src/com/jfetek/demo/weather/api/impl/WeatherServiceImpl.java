@@ -9,14 +9,19 @@ import com.jfetek.common.data.Result;
 import com.jfetek.common.time.DateRange;
 import com.jfetek.demo.weather.Console;
 import com.jfetek.demo.weather.api.MongoAPI;
+import com.jfetek.demo.weather.api.WeatherQuery;
 import com.jfetek.demo.weather.api.WeatherService;
 
 public class WeatherServiceImpl implements WeatherService {
 	private static final Logger logger = LoggerFactory.getLogger(WeatherServiceImpl.class);
 
 	@Override
-	public ArrayList<ArrayList<?>> queryDailyList(String stations, DateRange dateRange, String[] columns) {
-
+	public ArrayList<ArrayList<?>> queryDailyList(WeatherQuery query) {
+		DateRange dateRange = query.getDateRange();
+		String stations = query.getStations();
+		String[] columns = query.getColumns();
+		int limit = query.getLimit();
+		
 		MongoAPI api = new MongoAPI(Console.mongo.getDB("weather1"));		
 		ArrayList<ArrayList<?>> dataList = new ArrayList<ArrayList<?>>();
 		for (int year = dateRange.first.year.value, end = dateRange.last.year.value; year <= end; ++year) {
@@ -25,13 +30,22 @@ public class WeatherServiceImpl implements WeatherService {
 			if (result.positive()) {
 				dataList.addAll(result.data);
 			}
+			if (dataList.size() >= limit)
+				break;
 		}
 		
-		return dataList;
+		return dataList.size() >= limit ? 
+				new ArrayList<ArrayList<?>>(dataList.subList(0, limit)):
+				dataList;
 	}
 
 	@Override
-	public ArrayList<ArrayList<?>> queryRawList(String stations, DateRange dateRange, String[] columns) {
+	public ArrayList<ArrayList<?>> queryRawList(WeatherQuery query) {
+		
+		DateRange dateRange = query.getDateRange();
+		String stations = query.getStations();
+		String[] columns = query.getColumns();
+		int limit = query.getLimit();
 		
 		MongoAPI api = new MongoAPI(Console.mongo.getDB("weather1"));		
 		ArrayList<ArrayList<?>> dataList = new ArrayList<ArrayList<?>>();
@@ -42,13 +56,22 @@ public class WeatherServiceImpl implements WeatherService {
 			if (result.positive()) {
 				dataList.addAll(result.data);
 			}
+			if (dataList.size() >= limit)
+				break;
 		}
 		logger.debug("size={}", dataList.size());
-		return dataList;
+		return dataList.size() >= limit ? 
+				new ArrayList<ArrayList<?>>(dataList.subList(0, limit)):
+				dataList;
 	}
 
 	@Override
-	public ArrayList<ArrayList<?>> queryWeeklyList(String stations, DateRange dateRange, String[] columns) {
+	public ArrayList<ArrayList<?>> queryWeeklyList(WeatherQuery query) {
+		DateRange dateRange = query.getDateRange();
+		String stations = query.getStations();
+		String[] columns = query.getColumns();
+		int limit = query.getLimit();
+		
 		MongoAPI api = new MongoAPI(Console.mongo.getDB("weather1"));		
 		ArrayList<ArrayList<?>> dataList = new ArrayList<ArrayList<?>>();
 		
@@ -58,13 +81,23 @@ public class WeatherServiceImpl implements WeatherService {
 			if (result.positive()) {
 				dataList.addAll(result.data);
 			}
+			if (dataList.size() >= limit)
+				break;
 		}
 		
-		return dataList;
+		return dataList.size() >= limit ? 
+				new ArrayList<ArrayList<?>>(dataList.subList(0, limit)):
+				dataList;
 	}
 
 	@Override
-	public ArrayList<ArrayList<?>> queryMonthlyList(String stations, DateRange dateRange, String[] columns) {
+	public ArrayList<ArrayList<?>> queryMonthlyList(WeatherQuery query) {
+		
+		DateRange dateRange = query.getDateRange();
+		String stations = query.getStations();
+		String[] columns = query.getColumns();
+		int limit = query.getLimit();
+		
 		MongoAPI api = new MongoAPI(Console.mongo.getDB("weather1"));		
 		ArrayList<ArrayList<?>> dataList = new ArrayList<ArrayList<?>>();
 		
@@ -74,8 +107,12 @@ public class WeatherServiceImpl implements WeatherService {
 			if (result.positive()) {
 				dataList.addAll(result.data);
 			}
+			if (dataList.size() >= limit)
+				break;
 		}
 		
-		return dataList;
+		return dataList.size() >= limit ? 
+				new ArrayList<ArrayList<?>>(dataList.subList(0, limit)):
+				dataList;
 	}
 }

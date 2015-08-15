@@ -26,6 +26,7 @@ import com.jfetek.common.time.DateTime;
 import com.jfetek.common.util.JsonUtil;
 import com.jfetek.demo.weather.api.ServiceFactory;
 import com.jfetek.demo.weather.api.StationService;
+import com.jfetek.demo.weather.api.WeatherQuery;
 import com.jfetek.demo.weather.api.WeatherService;
 import com.mysql.jdbc.StringUtils;
 
@@ -104,6 +105,7 @@ public class WeatherByStation extends HttpServlet {
 		Date g_begin = params.getDateParam("begin_time");
 		Date g_end = params.getDateParam("end_time");
 		String sample_rate = params.getParam("sample_rate");
+		int limit = params.getIntParam("limit", 10);
 		
 		if (StringUtils.isEmptyOrWhitespaceOnly(g_stations)) {
 			JSONObject json = JsonUtil.getBasicJson(ErrorCode.error(ErrorCode.INVALID_PARAMETER, "Invalid argument: stations"));
@@ -128,7 +130,7 @@ public class WeatherByStation extends HttpServlet {
 		else {
 			drange = DateRange.between(g_begin, g_end);
 		}
-			
+		
 		HashMap<String,List<?>> map = new HashMap<String,List<?>>(4);		
 		String g_columns = params.getParam("fields", "");
 		String[] columns = g_columns.split(",");		
@@ -154,20 +156,26 @@ public class WeatherByStation extends HttpServlet {
 		}
 		map.put("columns", exp_cols);
 		
+		WeatherQuery query = new WeatherQuery();
+		query.setStations(g_stations);
+		query.setDateRange(drange);
+		query.setColumns(columns);
+		query.setLimit(limit);
+		
 		if ("d".equals(sample_rate) || "r".equals(sample_rate)) {
 			// daily base
-			dataList.addAll(weatherService.queryDailyList(g_stations, drange, columns));
+			dataList.addAll(weatherService.queryDailyList(query));
 		}
 		else if ("w".equals(sample_rate)) {
 			// weekly base
-			dataList.addAll(weatherService.queryWeeklyList(g_stations, drange, columns));
+			dataList.addAll(weatherService.queryWeeklyList(query));
 		}
 		else if ("m".equals(sample_rate)) {
 			// monthly base
-			dataList.addAll(weatherService.queryMonthlyList(g_stations, drange, columns));
+			dataList.addAll(weatherService.queryMonthlyList(query));
 		}
 		else {
-			dataList.addAll(weatherService.queryDailyList(g_stations, drange, columns));
+			dataList.addAll(weatherService.queryDailyList(query));
 //			// raw base
 //			map.put("columns", Arrays.asList(columns));
 //			dataList.addAll(weatherService.queryRawList(g_stations, drange, columns));
