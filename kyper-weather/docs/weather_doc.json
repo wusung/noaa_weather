@@ -1,0 +1,104 @@
+{ 
+  "name" : "weather",
+  "prefix" : "kyper.data",
+  "members" : [ 
+      { 
+        "name" : "get_fields",
+        "description" : "Show a lookup table for fields provided in weather data.",
+        "params" : [  ],
+        "class_method" : true,
+        "ret" : { 
+            "type" : "pandas.DataFrame",
+            "description" : "All fields in weather data."
+          }
+      },
+      { 
+        "name" : "station_list",
+        "description" : "Search weather stations information by country or coordinates. The required parameters are either country and coordinates(lat/lng), but not both.",
+        "params" : [ 
+            { 
+              "name" : "country",
+              "type" : [ "str" ],
+              "default" : null,
+              "description" : "The country code for searching station. FIPS country code is used, please refer to https://en.wikipedia.org/wiki/List_of_FIPS_country_codes"
+            },
+            { 
+              "name" : "lat",
+              "type" : [ "int" ],
+              "default" : null,
+              "description" : "The latitude of a location for searching station. This parameter should be used along with lng"
+            },
+            { 
+              "name" : "lng",
+              "type" : [ "int" ],
+              "default" : null,
+              "description" : "The longitude of a location for searching station. This parameter should be used along with lat"
+            },
+            { 
+              "name" : "limit",
+              "type" : [ "int" ],
+              "default" : "10",
+              "description" : "The number of station information returned"
+            }
+          ],
+        "class_method" : true,
+        "ret" : { 
+            "type" : "pandas.DataFrame",
+            "description" : "Weather station information based on country or coordinates(lat/lng)"
+          }
+      },
+      { 
+        "name" : "weather_stations",
+        "description" : "Search weather data by station Id and date range.",
+        "params" : [ 
+            { 
+              "name" : "stations",
+              "type" : [ "list[str]" ],
+              "default" : null,
+              "description" : "stations id to search for"
+            },
+            { 
+              "name" : "start_date",
+              "type" : [ "str", "datetime.date", "kyper.util.time_helper.UTC" ],
+              "default" : datetime.now,
+              "description" : "The beginning date of the query. If this value is not specified, it will be NOW."
+            },
+            { 
+              "name" : "end_date",
+              "type" : [ "str", "datetime.date", "kyper.util.time_helper.UTC" ],
+              "default" : datetime.now-180,
+              "description" : "The ending date of the query. If this value is not specified, it will be 180 ago."
+            },
+            { 
+              "name" : "fields",
+              "type" : [ "list[str]" ],
+              "default" : "['date', 'speed', 'gus', 'vsb', 'temperature', 'dewp', 'slp', 'stp', 'pcpxx', 'sd']",
+              "description" : "(Optional) Data fields for the query. For details of each filed, please use get_fields() faction"
+            },
+            { 
+              "name" : "freq",
+              "type" : [ "str" ],
+              "default" : "d",
+              "description" : "(Optional) Frequency for return weather data. Takes 'd': daily,'w': weekly, 'm': monthly"
+            },
+            {
+              "name" : "offset",
+              "type" : [ "int" ],
+              "default" : "0",
+              "description" : "The starting position of returning records. Default: 0"
+            },
+            { 
+              "name" : "limit",
+              "type" : [ "int" ],
+              "default" : "1000",
+              "description" : "The number of station information returned"
+            }
+          ],
+        "class_method" : true,
+        "ret" : { 
+            "type" : "pandas.DataFrame",
+            "description" : "Weather data based on stations Id and date range"
+          }
+      }
+    ]
+}

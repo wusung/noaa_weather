@@ -5,9 +5,18 @@ import com.jfetek.common.time.DateRange;
 public class WeatherQuery {
 
 	private String stations;
-	private int limit;
 	private DateRange dateRange; 
 	private String[] columns;
+	
+	/**
+	 * Start position of the results.
+	 */
+	private int offset;
+	
+	/**
+	 * Maximum number of the results.
+	 */
+	private int limit;
 	
 	public String getStations() {
 		return stations;
@@ -32,5 +41,11 @@ public class WeatherQuery {
 	}
 	public void setColumns(String[] columns) {
 		this.columns = columns;
+	}
+	public int getOffset() {
+		return offset;
+	}
+	public void setOffset(int offset) {
+		this.offset = offset;
 	}	
 }

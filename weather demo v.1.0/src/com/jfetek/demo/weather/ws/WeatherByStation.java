@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,7 +24,6 @@ import com.jfetek.common.time.DateRange;
 import com.jfetek.common.time.DateTime;
 import com.jfetek.common.util.JsonUtil;
 import com.jfetek.demo.weather.api.ServiceFactory;
-import com.jfetek.demo.weather.api.StationService;
 import com.jfetek.demo.weather.api.WeatherQuery;
 import com.jfetek.demo.weather.api.WeatherService;
 import com.mysql.jdbc.StringUtils;
@@ -39,7 +37,6 @@ public class WeatherByStation extends HttpServlet {
 	
 	public static final String 	VERSION	= "0";
 
-	private StationService stationService = ServiceFactory.getInstance().stationService();
 	private WeatherService weatherService = ServiceFactory.getInstance().weatherService();
 	
 	static final double R	= 6371;	// earth radius
@@ -105,7 +102,8 @@ public class WeatherByStation extends HttpServlet {
 		Date g_begin = params.getDateParam("begin_time");
 		Date g_end = params.getDateParam("end_time");
 		String sample_rate = params.getParam("sample_rate");
-		int limit = params.getIntParam("limit", 10);
+		int offset = params.getIntParam("offset", 0);
+		int limit = params.getIntParam("limit", 1000);
 		
 		if (StringUtils.isEmptyOrWhitespaceOnly(g_stations)) {
 			JSONObject json = JsonUtil.getBasicJson(ErrorCode.error(ErrorCode.INVALID_PARAMETER, "Invalid argument: stations"));
@@ -161,6 +159,7 @@ public class WeatherByStation extends HttpServlet {
 		query.setDateRange(drange);
 		query.setColumns(columns);
 		query.setLimit(limit);
+		query.setOffset(offset);
 		
 		if ("d".equals(sample_rate) || "r".equals(sample_rate)) {
 			// daily base

@@ -41,7 +41,7 @@ SUM_FIELDS = ["date", "speed", "gus", "vsb", "temperature", "dewp",
               "slp", "stp", "pcpxx", "sd"]
 
 
-def weather_stations(stations, start_date, end_date, freq="d", fields=SUM_FIELDS, limit=1000):
+def weather_stations(stations, start_date, end_date, freq="d", fields=SUM_FIELDS, offset=0, limit=1000):
     """
     Args:
         stations: list[string], The id of weather stations. The number of stations should be less than 100.
@@ -59,6 +59,7 @@ def weather_stations(stations, start_date, end_date, freq="d", fields=SUM_FIELDS
             stp: Station pressure in millibars to nearest tenth
             pcpxx: Liquid precip report in inches and hundredths, for a period
             sd: Snow depth in inches
+        offset: The starting position of returning records. Default: 0
         limit: Limit of returning records. Default: 1000
     Returns:
         pandas.DataFrame: Return a pandas.DataFrame contains weather data in the stations. Returns DataFrame.emtpy if none where found.
@@ -71,6 +72,7 @@ def weather_stations(stations, start_date, end_date, freq="d", fields=SUM_FIELDS
         end_time=end_date,
         fields=",".join(fields),
         sample_rate=freq,
+        offset=offset,
         limit=limit
     )
     data = get_data(SERVICE, VERSION, sys._getframe().f_code.co_name, **params)
