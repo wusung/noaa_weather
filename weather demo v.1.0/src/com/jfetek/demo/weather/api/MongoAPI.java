@@ -3,6 +3,7 @@ package com.jfetek.demo.weather.api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -257,6 +258,18 @@ public class MongoAPI {
 				}
 				else if (obj instanceof DataSummary) {
 					DataSummary dsum = (DataSummary) obj;
+					if ("speed".equals(col) || 
+						"gus".equals(col) ||
+						"temperature".equals(col) ||
+						"dewp".equals(col) ||
+						"sd".equals(col)) {
+						dsum.setPrecision(0);
+					} else if ("vsb".equals(col)) {
+						dsum.setPrecision(1);
+					}
+					else {
+						dsum.setPrecision(2);
+					}
 					row.add( dsum.getMin() );
 					row.add( dsum.getMax() );
 					row.add( dsum.getAvg() );
@@ -415,6 +428,18 @@ public class MongoAPI {
 					}
 					else if (obj instanceof DataSummary) {
 						DataSummary dsum = (DataSummary) obj;
+						if ("speed".equals(col) || 
+							"gus".equals(col) ||
+							"temperature".equals(col) ||
+							"dewp".equals(col) ||
+							"sd".equals(col)) {
+							dsum.setPrecision(0);
+						} else if ("vsb".equals(col)) {
+							dsum.setPrecision(1);
+						}
+						else {
+							dsum.setPrecision(2);
+						}
 						row.add( dsum.getMin() );
 						row.add( dsum.getMax() );
 						row.add( dsum.getAvg() );
@@ -582,6 +607,18 @@ public class MongoAPI {
 					}
 					else if (obj instanceof DataSummary) {
 						DataSummary dsum = (DataSummary) obj;
+						if ("speed".equals(col) || 
+							"gus".equals(col) ||
+							"temperature".equals(col) ||
+							"dewp".equals(col) ||
+							"sd".equals(col)) {
+							dsum.setPrecision(0);
+						} else if ("vsb".equals(col)) {
+							dsum.setPrecision(1);
+						}
+						else {
+							dsum.setPrecision(2);
+						}						
 						row.add( dsum.getMin() );
 						row.add( dsum.getMax() );
 						row.add( dsum.getAvg() );
@@ -646,6 +683,8 @@ public class MongoAPI {
 		private final ArrayList<Double> list;
 		private double min;
 		private double max;
+		private int precision = 0;
+		
 		public DataSummary() {
 			this.list = new ArrayList<Double>();
 			this.min = Double.MAX_VALUE;
@@ -669,7 +708,8 @@ public class MongoAPI {
 		
 		public double getAvg() {
 			int len = this.list.size();
-			return 0==len? 0.0 : getSum() / this.list.size();
+			double avg = (0 ==len? 0.0 : getSum() / this.list.size());
+			return new BigDecimal(avg).setScale(precision, BigDecimal.ROUND_HALF_UP).doubleValue();
 		}
 		
 		public double getCount() {
@@ -684,6 +724,14 @@ public class MongoAPI {
 		public double getMin() {
 			int len = this.list.size();
 			return 0==len? -999.0 : this.min;
+		}
+
+		public int getPrecision() {
+			return precision;
+		}
+
+		public void setPrecision(int precision) {
+			this.precision = precision;
 		}
 	}
 
