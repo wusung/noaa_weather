@@ -1,44 +1,57 @@
 # -*- coding: utf8 -*-
 import sys
 import pandas as pd
-import requests
 
 from collections import namedtuple
+from ..utils import get_data
 
-try:
-    from ..utils import get_data
-except Exception:
-    def _parse_response(response, version):
-        """
-          Parses response into Python dict and checks for exceptions
-        """
-        js = response.json()
-
-        if js.get('status') == "ok":
-            if js.get('version') == version:
-                return js
-            else:
-                raise BaseException("error version")
-        elif js.get('status') == "error":
-            raise BaseException("error status")
-        else:
-            raise BaseException("error others")
-
-    # Write Development Wrapper
-    def get_data(service, version, method, **kwargs):
-        end_point = "http://weather.kyper.co"
-        req_url = "{SERVER}/{ACTION}".format(SERVER=end_point, ACTION=method)
-        return _parse_response(requests.get(req_url, params=kwargs),
-                               version).get("data")
 
 VERSION = "0"
 SERVICE = "weather"
 FIELDS = ["date", "time", "direction", "speed", "temperature", "dewp", "min", "max"]
-RAW_FIELDS = ["date", "time", "direction", "speed", "gus", "clg", "skc", "l", 
+RAW_FIELDS = ["date", "direction", "speed", "gus", "clg", "skc", "l",
               "m", "h", "vsb", "mw", "aw", "w", "slp", "alt", "stp", "pcp01", "pcp06",
               "pcp24", "pcpxx", "sd"]
 SUM_FIELDS = ["date", "speed", "gus", "vsb", "temperature", "dewp", 
               "slp", "stp", "pcpxx", "sd"]
+
+
+def weather_historical(stations, start_date, end_date, fields=RAW_FIELDS, offset=0, limit=1000):
+    """
+    Args:
+        stations: list[string], The id of weather stations. The number of stations should be less than 100.
+        start_date: str, The optional start date for the query (optional).
+        end_date: str, The optional end date for the query (optional).
+        freq: str: The returned frequence, can be one of 'd', 'w', 'm', which stand for daily, weekly and monthly
+        fields: list[string], the returned fields, can be the following values. ["date", "speed", "gus", "vsb", "temperature", "dewp", "slp", "stp", "pcpxx", "sd"] which means as the following.
+            date: Date
+            speed: Wind speed in miles per hour
+            gus: Gust in miles per hour
+            vsb: Visibility in statute miles to nearest tenth
+            temperature: Temperature in fahrenheit
+            dewp: Dew point in fahrenheit
+            slp: Sea level pressure in millibars to nearest tenth
+            stp: Station pressure in millibars to nearest tenth
+            pcpxx: Liquid precip report in inches and hundredths, for a period
+            sd: Snow depth in inches
+        offset: The starting position of returning records. Default: 0
+        limit: Limit of returning records. Default: 1000
+    Returns:
+        pandas.DataFrame: Return a pandas.DataFrame contains weather data in the stations. Returns DataFrame.emtpy if none where found.
+    """
+    if len(stations) > 100:
+        raise Exception("The number of stations should be less than 100")
+    params = dict(
+        stations=",".join(stations),
+        begin_time=start_date,
+        end_time=end_date,
+        fields=",".join(fields),
+        offset=offset,
+        limit=limit
+    )
+    data = get_data(SERVICE, VERSION, sys._getframe().f_code.co_name, **params)
+    result = pd.read_json(data, orient="split")
+    return result.sort_index(ascending=[True])
 
 
 def weather_stations(stations, start_date, end_date, freq="d", fields=SUM_FIELDS, offset=0, limit=1000):
@@ -108,15 +121,15 @@ def get_fields():
 
     Field = namedtuple('Field','Name Description')
     all_fields = [Field("date","Date"),
-                  Field("speed", "Wind speed in miles per hour"),
-                  Field("gus", "Gust in miles per hour"),
-                  Field("vsb", "Visibility in statute miles to nearest tenth"),
-                  Field("temperature", "Temperature in fahrenheit"),
-                  Field("dewp", "Dew point in fahrenheit"),
-                  Field("slp", "Sea level pressure in millibars to nearest tenth"),
-                  Field("stp", "Station pressure in millibars to nearest tenth"),
-                  Field("pcpxx", "Liquid precip report in inches and hundredths, for a period"),
-                  Field("sd", "Snow depth in inches")]
+                  Field("speed", "Wind speed in miles per hour, accurate to integer"),
+                  Field("gus", "Gust in miles per hour, accurate to integer"),
+                  Field("vsb", "Visibility in statute miles to nearest tenth, accurate to 1 decimal places"),
+                  Field("temperature", "Temperature in fahrenheit, accurate to integer"),
+                  Field("dewp", "Dew point in fahrenheit, accurate to integer"),
+                  Field("slp", "Sea level pressure in millibars to nearest tenth, accurate to 2 decimal places"),
+                  Field("stp", "Station pressure in millibars to nearest tenth, accurate to 2 decimal places"),
+                  Field("pcpxx", "Liquid precip report in inches and hundredths, for a period, accurate to 2 decimal places"),
+                  Field("sd", "Snow depth in inches in round number")]
 
     return pd.DataFrame(all_fields, columns=["Name","Description"])
 
